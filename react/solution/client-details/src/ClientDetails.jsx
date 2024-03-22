@@ -10,7 +10,7 @@ function ClientDetails() {
         <div className="container-fluid">
             <div className="row">
                 <div className="col-md-2">
-                    <span id="glueSpan" className="label label-warning">Glue42 is unavailable</span>
+                    <span id="glueSpan" className="label label-warning">io.Connect is unavailable</span>
                 </div>
                 <div className="col-md-10">
                     <h1 className="text-center">Client Details</h1>

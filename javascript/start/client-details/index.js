@@ -16,12 +16,12 @@ const setFields = (client) => {
 };
 
 // TODO: Chapter 2
-// const toggleGlueAvailable = () => {
-//     const span = document.getElementById("glueSpan");
+// const toggleIOAvailable = () => {
+//     const span = document.getElementById("ioConnectSpan");
 
 //     span.classList.remove("label-warning");
 //     span.classList.add("label-success");
-//     span.textContent = "Glue42 is available";
+//     span.textContent = "io.Connect is available";
 // };
 
 const start = async () => {

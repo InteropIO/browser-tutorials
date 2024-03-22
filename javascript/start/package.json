@@ -1,7 +1,7 @@
 {
     "name": "js-tutorial",
     "version": "1.0.0",
-    "description": "Glue42 Core JavaScript Tutorial",
+    "description": "io.Connect Browser JavaScript Tutorial",
     "scripts": {
         "start:clients": "http-server ./Clients -p 9000 -c-1",
         "start:stocks": "http-server ./Stocks -p 9100 -c-1",

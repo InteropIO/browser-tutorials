@@ -33,27 +33,27 @@ const setupClients = (clients) => {
     });
 };
 
-const toggleGlueAvailable = () => {
-    const span = document.getElementById("glueSpan");
+const toggleIOAvailable = () => {
+    const span = document.getElementById("ioConnectSpan");
 
     span.classList.remove("label-warning");
     span.classList.add("label-success");
-    span.textContent = "Glue42 is available";
+    span.textContent = "io.Connect is available";
 };
 
 const clientClickedHandler = async (client) => {
-    // const selectClientStocks = glue.interop.methods().find(method => method.name === "SelectClient");
+    // const selectClientStocks = io.interop.methods().find(method => method.name === "SelectClient");
 
     // if (selectClientStocks) {
-    //     glue.interop.invoke(selectClientStocks, { client });
+    //     io.interop.invoke(selectClientStocks, { client });
     // };
 
-    // glue.contexts.update("SelectedClient", client).catch(console.error);
+    // io.contexts.update("SelectedClient", client).catch(console.error);
 
-    // const currentChannel = glue.channels.my();
+    // const currentChannel = io.channels.my();
 
     // if (currentChannel) {
-    //     glue.channels.publish(client).catch(console.error);
+    //     io.channels.publish(client).catch(console.error);
     // };
 
     const restoreConfig = {
@@ -61,7 +61,7 @@ const clientClickedHandler = async (client) => {
     };
 
     try {
-        const workspace = await glue.workspaces.restoreWorkspace("Client Space", restoreConfig);
+        const workspace = await io.workspaces.restoreWorkspace("Client Space", restoreConfig);
 
         await raiseNotificationOnWorkspaceOpen(client.name, workspace);
     } catch(error) {
@@ -77,13 +77,13 @@ const clientClickedHandler = async (client) => {
 //     // const name = `Stocks-${instanceID || counter}`;
 //     // const URL = "http://localhost:9100/";
 
-//     // glue.windows.open(name, URL).catch(console.error)
+//     // io.windows.open(name, URL).catch(console.error)
 
 //     // counter++;
 //     // sessionStorage.setItem("counter", counter);
 
-//     const stocksApp = glue.appManager.application("Stocks")
-//     const currentChannel = glue.channels.my();
+//     const stocksApp = io.appManager.application("Stocks")
+//     const currentChannel = io.channels.my();
 
 //     stocksApp.start({ channel: currentChannel }).catch(console.error);
 // };
@@ -94,7 +94,7 @@ const raiseNotificationOnWorkspaceOpen = async (clientName, workspace) => {
         body: `A new Workspace for ${clientName} was opened!`,
     };
 
-    const notification = await glue.notifications.raise(options);
+    const notification = await io.notifications.raise(options);
 
     notification.onclick = () => {
         workspace.frame.focus().catch(console.error);
@@ -237,17 +237,17 @@ const start = async () => {
         ]
     };
     const config = {
-        glue: { libraries: [GlueWorkspaces] },
+        browser: { libraries: [IOWorkspaces] },
         workspaces: { src: "http://localhost:9300/" },
         plugins
     };
-    const { glue } = await GlueWebPlatform(config);
-    window.glue = glue;
+    const { io } = await IOBrowserPlatform(config);
+    window.io = io;
 
-    toggleGlueAvailable();
+    toggleIOAvailable();
 
     // const NO_CHANNEL_VALUE = "No channel";
-    // const channelContexts = await window.glue.channels.list();
+    // const channelContexts = await window.io.channels.list();
     // const channelNamesAndColors = channelContexts.map((channelContext) => {
     //     const channelInfo = {
     //         name: channelContext.name,
@@ -258,11 +258,11 @@ const start = async () => {
     // });
     // const onChannelSelected = (channelName) => {
     //     if (channelName === NO_CHANNEL_VALUE) {
-    //         if (glue.channels.my()) {
-    //             glue.channels.leave().catch(console.error);
+    //         if (io.channels.my()) {
+    //             io.channels.leave().catch(console.error);
     //         };
     //     } else {
-    //         glue.channels.join(channelName).catch(console.error);
+    //         io.channels.join(channelName).catch(console.error);
     //     };
     // };
 

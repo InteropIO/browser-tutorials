@@ -5,6 +5,6 @@ const fetchWorkspaceLayoutDefinitions = async (url) => {
     return layoutDefinitions;
 };
 
-const setupLayouts = async (glue, { url }) => {
+const setupLayouts = async (io, { url }) => {
     // TODO Chapter 9.2
 };

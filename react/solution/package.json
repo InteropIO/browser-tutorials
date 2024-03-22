@@ -1,7 +1,7 @@
 {
     "name": "react-tutorial",
     "version": "1.0.0",
-    "description": "Glue42 Core React Tutorial",
+    "description": "io.Connect Browser React Tutorial",
     "scripts": {
         "start:clients": "cd ./clients && npm start",
         "start:stocks": "cd ./stocks && npm start",
