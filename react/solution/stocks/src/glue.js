@@ -182,7 +182,7 @@ export const setClientFromWorkspace = (setClient) => async (glue) => {
 
 export const openStockDetailsInWorkspace = (glue) => async (stock) => {
     // Reference to the Glue42 Window object of the Stock Details instance.
-    let detailsGlue42Window;
+    let detailsWindow;
 
     const myWorkspace = await glue.workspaces.getMyWorkspace();
 
@@ -191,7 +191,7 @@ export const openStockDetailsInWorkspace = (glue) => async (stock) => {
 
     // Check whether the Stock Details has already been opened.
     if (detailsWorkspaceWindow) {
-        detailsGlue42Window = detailsWorkspaceWindow.getGdWindow();
+        detailsWindow = detailsWorkspaceWindow.getGdWindow();
     } else {
         // Reference to the current window.
         const myId = glue.windows.my().id;
@@ -203,11 +203,11 @@ export const openStockDetailsInWorkspace = (glue) => async (stock) => {
         // Open the Stock Details window in the newly created `Group` element.
         detailsWorkspaceWindow = await group.addWindow({ appName: "Stock Details" });
         await detailsWorkspaceWindow.forceLoad();
-        detailsGlue42Window = detailsWorkspaceWindow.getGdWindow();
+        detailsWindow = detailsWorkspaceWindow.getGdWindow();
     };
 
     // Update the window context with the selected stock.
-    detailsGlue42Window.updateContext({ stock });
+    detailsWindow.updateContext({ stock });
 };
 
 export const raiseExportPortfolioIntentRequest = (glue) => async (portfolio, clientName) => {

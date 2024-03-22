@@ -37,7 +37,7 @@ async function start() {
 
     toggleIOAvailable();
 
-    io.intents.addIntentListener("ExportPortfolio", intentHandler);
+    io.intents.register("ExportPortfolio", intentHandler);
 };
 
 start().catch(console.error);

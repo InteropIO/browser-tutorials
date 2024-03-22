@@ -9,7 +9,7 @@ export const setupIntentListener = (setClientName) => (glue) => {
         startPortfolioDownload(context.data.clientName, context.data.portfolio);
     };
 
-    // Pass `intentHandler()` to the `addIntentListener()` method.
+    // Pass `intentHandler()` to the `register()` method.
 
 };
 

@@ -3,7 +3,7 @@ window.createChannelSelectorWidget = (
     channelNamesAndColors,
     onChannelSelected
 ) => {
-    // Create a custom channel selector widget.
+    // Create a custom Channel Selector widget.
     $.widget("custom.channelSelectorWidget", $.ui.selectmenu, {
         // Create a button that will have the background of the current channel.
         _renderButtonItem: item => {
@@ -16,11 +16,11 @@ window.createChannelSelectorWidget = (
 
             const color = item.element.attr("color") || "#f5f5f5";;
             const channelSelectorWidgetButtonElement = $("#channel-selector-widget-button");
-            channelSelectorWidgetButtonElement.css('background-color', color);
+            channelSelectorWidgetButtonElement.css("background-color", color);
 
             return buttonItem;
         },
-        // Inside the channel selector widget menu display an item for each channel that has the channel name and color.
+        // Inside the Channel Selector widget menu display an item for each Channel that has the Channel name and color.
         _renderItem: (ul, item) => {
             const li = $("<li>");
             const wrapper = $("<div>", {
@@ -48,9 +48,10 @@ window.createChannelSelectorWidget = (
     const channelSelectorWidgetElement = $("#channel-selector-widget");
 
     channelSelectorWidgetElement.channelSelectorWidget({
-        // Whenever an item inside the channel selector widget menu is selected join the corresponding channel (or leave the current channel if NO_CHANNEL_VALUE is selected).
+        // Whenever an item inside the Channel Selector widget menu is selected,
+        // join the corresponding Channel (or leave the current Channel if `NO_CHANNEL_VALUE` is selected).
         select: (event, ui) => {
-            // Do not call onChannelSelected when the channel is changed programmatically.
+            // Do not call `onChannelSelected()` when the Channel is changed programmatically.
             if (event.originalEvent.type === "menuselect") {
                 onChannelSelected(ui.item.value);
             }
@@ -64,7 +65,7 @@ window.createChannelSelectorWidget = (
         padding: 0
     });
 
-    // Add the option to leave the current channel.
+    // Add the option to leave the current Channel.
     channelSelectorWidgetElement.append(
         $("<option>", {
             value: NO_CHANNEL_VALUE,
@@ -74,7 +75,7 @@ window.createChannelSelectorWidget = (
         })
     );
 
-    // Add an item for each channel to the channel selector widget menu.
+    // Add an item for each Channel to the Channel Selector widget menu.
     $.each(channelNamesAndColors, (_, channelNameAndColor) => {
         channelSelectorWidgetElement.append(
             $("<option>", {
@@ -86,9 +87,9 @@ window.createChannelSelectorWidget = (
         );
     });
 
-    // Return a method that would allow the update of the channel programmatically.
+    // Return a method that would allow the update of the Channel programmatically.
     return (channelName) => {
         channelSelectorWidgetElement.val(channelName);
-        channelSelectorWidgetElement.channelSelectorWidget('refresh', true);
+        channelSelectorWidgetElement.channelSelectorWidget("refresh", true);
     };
 };

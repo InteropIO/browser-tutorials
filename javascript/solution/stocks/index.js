@@ -166,13 +166,13 @@ const stockClickedHandler = async (stock) => {
     //     detailsApplication.start(stock).catch(console.error);
     // };
 
-    let detailsIOConnectWindow;
+    let detailsWindow;
 
     const myWorkspace = await io.workspaces.getMyWorkspace();
     let detailsWorkspaceWindow = myWorkspace.getWindow(window => window.appName === "Stock Details");
 
     if (detailsWorkspaceWindow) {
-        detailsIOConnectWindow = detailsWorkspaceWindow.getGdWindow();
+        detailsWindow = detailsWorkspaceWindow.getGdWindow();
     } else {
         const myId = io.windows.my().id;
         const myImmediateParent = myWorkspace.getWindow(window => window.id === myId).parent;
@@ -182,10 +182,10 @@ const stockClickedHandler = async (stock) => {
 
         await detailsWorkspaceWindow.forceLoad();
 
-        detailsIOConnectWindow = detailsWorkspaceWindow.getGdWindow();
+        detailsWindow = detailsWorkspaceWindow.getGdWindow();
     };
 
-    detailsIOConnectWindow.updateContext({ stock });
+    detailsWindow.updateContext({ stock });
 };
 
 const exportPortfolioButtonHandler = async (portfolio) => {

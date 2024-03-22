@@ -237,6 +237,9 @@ const start = async () => {
         ]
     };
     const config = {
+        // TODO: Chapter 1.2
+        // Enter a valid license key for io.Connect Browser.
+        licenseKey: "",
         browser: { libraries: [IOWorkspaces] },
         workspaces: { src: "http://localhost:9300/" },
         plugins
