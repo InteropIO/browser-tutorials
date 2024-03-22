@@ -31,12 +31,12 @@ const updateStockPrices = (bid, ask) => {
     elementAsk.innerText = ask;
 };
 
-const toggleGlueAvailable = () => {
-    const span = document.getElementById("glueSpan");
+const toggleIOAvailable = () => {
+    const span = document.getElementById("ioConnectSpan");
 
     span.classList.remove("label-warning");
     span.classList.add("label-success");
-    span.textContent = "Glue42 is available";
+    span.textContent = "io.Connect is available";
 };
 
 // const updateClientStatus = (client, stock) => {
@@ -49,14 +49,14 @@ const toggleGlueAvailable = () => {
 // };
 
 const start = async () => {
-    const glue = await GlueWeb();
-    window.glue = glue;
+    const io = await IOBrowser();
+    window.io = io;
 
-    toggleGlueAvailable();
+    toggleIOAvailable();
 
-    const myWindow = glue.windows.my();
+    const myWindow = io.windows.my();
     const context = await myWindow.getContext();
-    // const stock = await glue.appManager.myInstance.getContext();
+    // const stock = await io.appManager.myInstance.getContext();
     let selectedStock;
 
     if (context && context.stock) {
@@ -73,7 +73,7 @@ const start = async () => {
         };
     });
 
-    const subscription = await glue.interop.subscribe("LivePrices");
+    const subscription = await io.interop.subscribe("LivePrices");
 
     const streamDataHandler = (streamData) => {
         if (!selectedStock) {
@@ -92,7 +92,7 @@ const start = async () => {
     //     updateClientStatus(client, stock);
     // };
 
-    // glue.contexts.subscribe("SelectedClient", updateHandler);
+    // io.contexts.subscribe("SelectedClient", updateHandler);
 };
 
 start().catch(console.error);

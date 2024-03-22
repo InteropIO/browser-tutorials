@@ -111,12 +111,12 @@ const setupStocks = (stocks) => {
     });
 };
 
-const toggleGlueAvailable = () => {
-    const span = document.getElementById("glueSpan");
+const toggleIOAvailable = () => {
+    const span = document.getElementById("ioConnectSpan");
 
     span.classList.remove("label-warning");
     span.classList.add("label-success");
-    span.textContent = "Glue42 is available";
+    span.textContent = "io.Connect is available";
 };
 
 const newPricesHandler = (priceUpdate) => {
@@ -150,13 +150,13 @@ const stockClickedHandler = async (stock) => {
     //     context: stock
     // };
 
-    // const stockWindowExists = glue.windows.list().find(w => w.name === name);
+    // const stockWindowExists = io.windows.list().find(w => w.name === name);
 
     // if (!stockWindowExists) {
-    //     glue.windows.open(name, URL, config).catch(console.error);
+    //     io.windows.open(name, URL, config).catch(console.error);
     // };
 
-    // const detailsApplication = glue.appManager.application("Stock Details");
+    // const detailsApplication = io.appManager.application("Stock Details");
     // const contexts = await Promise.all(
     //     detailsApplication.instances.map(instance => instance.getContext())
     // );
@@ -166,15 +166,15 @@ const stockClickedHandler = async (stock) => {
     //     detailsApplication.start(stock).catch(console.error);
     // };
 
-    let detailsGlue42Window;
+    let detailsWindow;
 
-    const myWorkspace = await glue.workspaces.getMyWorkspace();
+    const myWorkspace = await io.workspaces.getMyWorkspace();
     let detailsWorkspaceWindow = myWorkspace.getWindow(window => window.appName === "Stock Details");
 
     if (detailsWorkspaceWindow) {
-        detailsGlue42Window = detailsWorkspaceWindow.getGdWindow();
+        detailsWindow = detailsWorkspaceWindow.getGdWindow();
     } else {
-        const myId = glue.windows.my().id;
+        const myId = io.windows.my().id;
         const myImmediateParent = myWorkspace.getWindow(window => window.id === myId).parent;
         const group = await myImmediateParent.parent.addGroup();
 
@@ -182,15 +182,15 @@ const stockClickedHandler = async (stock) => {
 
         await detailsWorkspaceWindow.forceLoad();
 
-        detailsGlue42Window = detailsWorkspaceWindow.getGdWindow();
+        detailsWindow = detailsWorkspaceWindow.getGdWindow();
     };
 
-    detailsGlue42Window.updateContext({ stock });
+    detailsWindow.updateContext({ stock });
 };
 
 const exportPortfolioButtonHandler = async (portfolio) => {
-    try { 
-        const intents = await glue.intents.find("ExportPortfolio");
+    try {
+        const intents = await io.intents.find("ExportPortfolio");
 
         if (!intents) {
             return;
@@ -204,7 +204,7 @@ const exportPortfolioButtonHandler = async (portfolio) => {
             }
         };
 
-        await glue.intents.raise(intentRequest);
+        await io.intents.raise(intentRequest);
     } catch (error) {
         console.error(error.message);
     }
@@ -223,12 +223,12 @@ const start = async () => {
     generateStockPrices(newPricesHandler);
 
     const config = {
-        libraries: [GlueWorkspaces]
+        libraries: [IOWorkspaces]
     };
-    const glue = await GlueWeb(config);
-    window.glue = glue;
+    const io = await IOBrowser(config);
+    window.io = io;
 
-    toggleGlueAvailable();
+    toggleIOAvailable();
 
     // const methodName = "SelectClient";
     // const methodHandler = (args) => {
@@ -238,14 +238,14 @@ const start = async () => {
     //     setupStocks(stockToShow);
     // };
 
-    // glue.interop.register(methodName, methodHandler);
+    // io.interop.register(methodName, methodHandler);
 
-    window.priceStream = await glue.interop.createStream("LivePrices");
+    window.priceStream = await io.interop.createStream("LivePrices");
 
-    // glue.contexts.subscribe("SelectedClient", updateHandler);
+    // io.contexts.subscribe("SelectedClient", updateHandler);
 
     // const NO_CHANNEL_VALUE = "No channel";
-    // const channelContexts = await window.glue.channels.list();
+    // const channelContexts = await window.io.channels.list();
 
     // const channelNamesAndColors = channelContexts.map((channelContext) => {
     //     const channelInfo = {
@@ -258,11 +258,11 @@ const start = async () => {
 
     // const onChannelSelected = (channelName) => {
     //     if (channelName === NO_CHANNEL_VALUE) {
-    //         if (glue.channels.my()) {
-    //             glue.channels.leave().catch(console.error);
+    //         if (io.channels.my()) {
+    //             io.channels.leave().catch(console.error);
     //         };
     //     } else {
-    //         glue.channels.join(channelName).catch(console.error);
+    //         io.channels.join(channelName).catch(console.error);
     //     };
     // };
 
@@ -281,23 +281,23 @@ const start = async () => {
     //     };
     // };
 
-    // glue.channels.subscribe(updateHandler);
+    // io.channels.subscribe(updateHandler);
 
     // const handleChannelChanges = (channelName) => {
     //     updateChannelSelectorWidget(channelName || NO_CHANNEL_VALUE);
     //     console.log(`channel changed ${channelName}`)
     // };
 
-    // glue.channels.onChanged(handleChannelChanges);
+    // io.channels.onChanged(handleChannelChanges);
 
-    // const appContext = await glue.appManager.myInstance.getContext();
+    // const appContext = await io.appManager.myInstance.getContext();
     // const channelToJoin = appContext.channel;
 
     // if (channelToJoin) {
-    //     await glue.channels.join(channelToJoin);
+    //     await io.channels.join(channelToJoin);
     // };
 
-    const myWorkspace = await glue.workspaces.getMyWorkspace();
+    const myWorkspace = await io.workspaces.getMyWorkspace();
 
     if (myWorkspace) {
         myWorkspace.onContextUpdated((context) => {
@@ -317,7 +317,7 @@ const start = async () => {
         if (!clientPortfolioStocks) {
             return;
         };
-        
+
         exportPortfolioButtonHandler(clientPortfolioStocks);
     };
 };

@@ -22,12 +22,12 @@ function Clients() {
                 {/* <div className="col-md-2">
                     {!glue && (
                         <span id="glueSpan" className="badge badge-warning">
-                            Glue42 is unavailable
+                            io.Connect is unavailable
                         </span>
                     )}
                     {glue && (
                         <span id="glueSpan" className="badge badge-success">
-                            Glue42 is available
+                            io.Connect is available
                         </span>
                     )}
                 </div> */}

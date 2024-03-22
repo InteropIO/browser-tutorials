@@ -23,21 +23,21 @@ const setupTitle = (clientName) => {
     title.innerText = `Downloading the portfolio of ${clientName}...`;
 };
 
-const toggleGlueAvailable = () => {
-    const span = document.getElementById("glueSpan");
+const toggleIOAvailable = () => {
+    const span = document.getElementById("ioConnectSpan");
 
     span.classList.remove("label-warning");
     span.classList.add("label-success");
-    span.textContent = "Glue42 is available";
+    span.textContent = "io.Connect is available";
 };
 
 async function start() {
-    const glue = await GlueWeb();
-    window.glue = glue;
+    const io = await IOBrowser();
+    window.io = io;
 
-    toggleGlueAvailable();
+    toggleIOAvailable();
 
-    glue.intents.addIntentListener("ExportPortfolio", intentHandler);
+    io.intents.register("ExportPortfolio", intentHandler);
 };
 
 start().catch(console.error);

@@ -9,7 +9,7 @@ export const setupIntentListener = (setClientName) => (glue) => {
         startPortfolioDownload(context.data.clientName, context.data.portfolio);
     };
 
-    glue.intents.addIntentListener('ExportPortfolio', intentHandler);
+    glue.intents.register('ExportPortfolio', intentHandler);
 };
 
 const startPortfolioDownload = (clientName, portfolio) => {

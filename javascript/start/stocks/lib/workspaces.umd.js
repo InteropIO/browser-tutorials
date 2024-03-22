@@ -1,29 +1,30 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define(factory) :
-    (global = global || self, global.workspaces = factory());
-}(this, (function () { 'use strict';
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.workspaces = factory());
+})(this, (function () { 'use strict';
 
-    /*! *****************************************************************************
-    Copyright (c) Microsoft Corporation. All rights reserved.
-    Licensed under the Apache License, Version 2.0 (the "License"); you may not use
-    this file except in compliance with the License. You may obtain a copy of the
-    License at http://www.apache.org/licenses/LICENSE-2.0
+    /******************************************************************************
+    Copyright (c) Microsoft Corporation.
 
-    THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-    KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
-    WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
-    MERCHANTABLITY OR NON-INFRINGEMENT.
+    Permission to use, copy, modify, and/or distribute this software for any
+    purpose with or without fee is hereby granted.
 
-    See the Apache Version 2.0 License for specific language governing permissions
-    and limitations under the License.
+    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+    REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+    AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+    INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+    LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+    OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
     ***************************************************************************** */
 
     function __awaiter(thisArg, _arguments, P, generator) {
+        function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
         return new (P || (P = Promise))(function (resolve, reject) {
             function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
             function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-            function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+            function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
             step((generator = generator.apply(thisArg, _arguments || [])).next());
         });
     }
@@ -38,13 +39,33 @@
         }
         var _userErrorHandler = options && typeof options.errorHandling === "function" && options.errorHandling;
         var callbacks = {};
-        function add(key, callback) {
+        function add(key, callback, replayArgumentsArr) {
             var callbacksForKey = callbacks[key];
             if (!callbacksForKey) {
                 callbacksForKey = [];
                 callbacks[key] = callbacksForKey;
             }
             callbacksForKey.push(callback);
+            if (replayArgumentsArr) {
+                setTimeout(function () {
+                    replayArgumentsArr.forEach(function (replayArgument) {
+                        var _a;
+                        if ((_a = callbacks[key]) === null || _a === void 0 ? void 0 : _a.includes(callback)) {
+                            try {
+                                if (Array.isArray(replayArgument)) {
+                                    callback.apply(undefined, replayArgument);
+                                }
+                                else {
+                                    callback.apply(undefined, [replayArgument]);
+                                }
+                            }
+                            catch (err) {
+                                _handleError(err, key);
+                            }
+                        }
+                    });
+                }, 0);
+            }
             return function () {
                 var allForKey = callbacks[key];
                 if (!allForKey) {
@@ -56,7 +77,12 @@
                     }
                     return acc;
                 }, []);
-                callbacks[key] = allForKey;
+                if (allForKey.length === 0) {
+                    delete callbacks[key];
+                }
+                else {
+                    callbacks[key] = allForKey;
+                }
             };
         }
         function execute(key) {
@@ -127,19 +153,11 @@
      */
     var ok = function (result) { return ({ ok: true, result: result }); };
     /**
-     * Typeguard for `Ok`.
-     */
-    var isOk = function (r) { return r.ok === true; };
-    /**
      * Wraps errors in an `Err` type.
      *
      * Example: `err('on fire') // => {ok: false, error: 'on fire'}`
      */
     var err = function (error) { return ({ ok: false, error: error }); };
-    /**
-     * Typeguard for `Err`.
-     */
-    var isErr = function (r) { return r.ok === false; };
     /**
      * Create a `Promise` that either resolves with the result of `Ok` or rejects
      * with the error of `Err`.
@@ -186,12 +204,6 @@
         }
     };
     /**
-     * Given an array of `Result`s, return the successful values.
-     */
-    var successes = function (results) {
-        return results.reduce(function (acc, r) { return (r.ok === true ? acc.concat(r.result) : acc); }, []);
-    };
-    /**
      * Apply `f` to the result of an `Ok`, or pass the error through.
      */
     var map = function (f, r) {
@@ -221,22 +233,6 @@
     var andThen = function (f, r) {
         return r.ok === true ? f(r.result) : r;
     };
-
-
-    var result = Object.freeze({
-    	ok: ok,
-    	isOk: isOk,
-    	err: err,
-    	isErr: isErr,
-    	asPromise: asPromise,
-    	withDefault: withDefault,
-    	withException: withException,
-    	successes: successes,
-    	map: map,
-    	map2: map2,
-    	mapError: mapError,
-    	andThen: andThen
-    });
 
     /*! *****************************************************************************
     Copyright (c) Microsoft Corporation.
@@ -900,18 +896,34 @@
     var boolean = Decoder.boolean;
     /** See `Decoder.anyJson` */
     var anyJson = Decoder.anyJson;
+    /** See `Decoder.unknownJson` */
+    Decoder.unknownJson;
     /** See `Decoder.constant` */
     var constant = Decoder.constant;
     /** See `Decoder.object` */
     var object = Decoder.object;
     /** See `Decoder.array` */
     var array = Decoder.array;
+    /** See `Decoder.tuple` */
+    Decoder.tuple;
+    /** See `Decoder.dict` */
+    Decoder.dict;
     /** See `Decoder.optional` */
     var optional = Decoder.optional;
     /** See `Decoder.oneOf` */
     var oneOf = Decoder.oneOf;
+    /** See `Decoder.union` */
+    Decoder.union;
     /** See `Decoder.intersection` */
     var intersection = Decoder.intersection;
+    /** See `Decoder.withDefault` */
+    Decoder.withDefault;
+    /** See `Decoder.valueAt` */
+    Decoder.valueAt;
+    /** See `Decoder.succeed` */
+    Decoder.succeed;
+    /** See `Decoder.fail` */
+    Decoder.fail;
     /** See `Decoder.lazy` */
     var lazy = Decoder.lazy;
 
@@ -1017,7 +1029,7 @@
         config: optional(groupDefinitionConfigDecoder)
     });
     const strictParentDefinitionDecoder = oneOf(strictGroupDefinitionDecoder, strictColumnDefinitionDecoder, strictRowDefinitionDecoder);
-    const stateDecoder = oneOf(string().where((s) => s.toLowerCase() === "maximized", "Expected a case insensitive variation of 'maximized'"), string().where((s) => s.toLowerCase() === "normal", "Expected a case insensitive variation of 'normal'"));
+    oneOf(string().where((s) => s.toLowerCase() === "maximized", "Expected a case insensitive variation of 'maximized'"), string().where((s) => s.toLowerCase() === "normal", "Expected a case insensitive variation of 'normal'"));
     const newFrameConfigDecoder = object({
         bounds: optional(object({
             left: optional(number()),
@@ -1044,7 +1056,8 @@
         icon: optional(nonEmptyStringDecoder),
         isPinned: optional(boolean()),
         isSelected: optional(boolean()),
-        positionIndex: optional(nonNegativeNumberDecoder)
+        positionIndex: optional(nonNegativeNumberDecoder),
+        allowSystemHibernation: optional(boolean())
     }));
     const openWorkspaceConfigDecoder = object({
         name: nonEmptyStringDecoder,
@@ -1065,6 +1078,7 @@
             allowDropTop: optional(boolean()),
             allowDropRight: optional(boolean()),
             allowDropBottom: optional(boolean()),
+            allowSystemHibernation: optional(boolean()),
             allowExtract: optional(boolean()),
             allowWindowReorder: optional(boolean()),
             showSaveButton: optional(boolean()),
@@ -1096,7 +1110,8 @@
     const emptyFrameDefinitionDecoder = optional(object({
         applicationName: optional(string()),
         frameConfig: optional(newFrameConfigDecoder),
-        context: optional(object())
+        context: optional(object()),
+        layoutComponentId: optional(nonEmptyStringDecoder)
     }));
     const frameInitConfigDecoder = object({
         workspaces: array(oneOf(optional(workspaceDefinitionDecoder), optional(restoreWorkspaceDefinitionDecoder)))
@@ -1126,7 +1141,7 @@
         isInitialized: optional(boolean()),
         initializationContext: optional(frameInitializationContextDecoder)
     });
-    const containerSummaryDecoder = object({
+    object({
         type: subParentDecoder,
         id: nonEmptyStringDecoder,
         frameId: nonEmptyStringDecoder,
@@ -1138,7 +1153,7 @@
         type: eventTypeDecoder,
         branch: nonEmptyStringDecoder
     });
-    const workspaceEventActionDecoder = oneOf(constant("opened"), constant("closing"), constant("closed"), constant("focus"), constant("added"), constant("loaded"), constant("removed"), constant("childrenUpdate"), constant("containerChange"), constant("maximized"), constant("restored"), constant("minimized"), constant("normal"), constant("selected"), constant("lock-configuration-changed"));
+    const workspaceEventActionDecoder = oneOf(constant("opened"), constant("closing"), constant("closed"), constant("focus"), constant("added"), constant("loaded"), constant("removed"), constant("childrenUpdate"), constant("containerChange"), constant("maximized"), constant("restored"), constant("minimized"), constant("normal"), constant("selected"), constant("lock-configuration-changed"), constant("hibernated"), constant("resumed"));
     const workspaceConfigResultDecoder = object({
         frameId: nonEmptyStringDecoder,
         title: nonEmptyStringDecoder,
@@ -1148,6 +1163,7 @@
         isHibernated: optional(boolean()),
         isSelected: optional(boolean()),
         allowDrop: optional(boolean()),
+        allowSystemHibernation: optional(boolean()),
         allowExtract: optional(boolean()),
         allowWindowReorder: optional(boolean()),
         allowSplitters: optional(boolean()),
@@ -1269,6 +1285,10 @@
         layout: workspaceLayoutDecoder,
         mode: oneOf(constant("replace"), constant("merge"))
     });
+    const workspacesImportLayoutsDecoder = object({
+        layouts: array(workspaceLayoutDecoder),
+        mode: oneOf(constant("replace"), constant("merge"))
+    });
     const exportedLayoutsResultDecoder = object({
         layouts: array(workspaceLayoutDecoder)
     });
@@ -1319,6 +1339,12 @@
     const getWorkspaceIconResultDecoder = object({
         icon: optional(nonEmptyStringDecoder)
     });
+    const getPlatformFrameIdResultDecoder = object({
+        id: optional(nonEmptyStringDecoder)
+    });
+    const operationCheckResultDecoder = object({
+        isSupported: boolean()
+    });
     const resizeConfigDecoder = object({
         width: optional(positiveNumberDecoder),
         height: optional(positiveNumberDecoder),
@@ -1354,7 +1380,7 @@
         enabled: boolean()
     });
     const moveFrameConfigDecoder = intersection(simpleItemConfigDecoder, moveConfigDecoder);
-    const simpleParentDecoder = object({
+    object({
         id: nonEmptyStringDecoder,
         type: subParentDecoder
     });
@@ -1375,9 +1401,13 @@
     const pingResultDecoder = object({
         live: boolean()
     });
-    const bundleConfigDecoder = object({
+    const bundleWorkspaceConfigDecoder = object({
         type: oneOf(constant("row"), constant("column")),
         workspaceId: nonEmptyStringDecoder
+    });
+    const bundleItemConfigDecoder = object({
+        type: oneOf(constant("row"), constant("column")),
+        itemId: nonEmptyStringDecoder
     });
     const containerSummaryResultDecoder = object({
         itemId: nonEmptyStringDecoder,
@@ -1415,6 +1445,7 @@
         allowDropTop: optional(boolean()),
         allowDropRight: optional(boolean()),
         allowDropBottom: optional(boolean()),
+        allowSystemHibernation: optional(boolean()),
         allowExtract: optional(boolean()),
         allowWindowReorder: optional(boolean()),
         allowSplitters: optional(boolean()),
@@ -1506,6 +1537,9 @@
         itemId: nonEmptyStringDecoder,
         type: loadingAnimationTypeDecoder
     });
+    const operationCheckConfigDecoder = object({
+        operation: nonEmptyStringDecoder
+    });
 
     const webPlatformMethodName = "T42.Web.Platform.Control";
     const webPlatformWspStreamName = "T42.Web.Platform.WSP.Stream";
@@ -1543,6 +1577,7 @@
         deleteLayout: { name: "deleteLayout", resultDecoder: voidResultDecoder, argsDecoder: deleteLayoutConfigDecoder },
         saveLayout: { name: "saveLayout", resultDecoder: workspaceLayoutDecoder, argsDecoder: workspaceLayoutSaveConfigDecoder },
         importLayout: { name: "importLayout", resultDecoder: voidResultDecoder, argsDecoder: workspacesImportLayoutDecoder },
+        importLayouts: { name: "importLayouts", resultDecoder: voidResultDecoder, argsDecoder: workspacesImportLayoutsDecoder },
         exportAllLayouts: { name: "exportAllLayouts", resultDecoder: exportedLayoutsResultDecoder },
         restoreItem: { name: "restoreItem", argsDecoder: simpleItemConfigDecoder, resultDecoder: voidResultDecoder },
         maximizeItem: { name: "maximizeItem", argsDecoder: simpleItemConfigDecoder, resultDecoder: voidResultDecoder },
@@ -1561,7 +1596,8 @@
         moveWindowTo: { name: "moveWindowTo", argsDecoder: moveWindowConfigDecoder, resultDecoder: voidResultDecoder },
         addWindow: { name: "addWindow", argsDecoder: addWindowConfigDecoder, resultDecoder: addItemResultDecoder },
         addContainer: { name: "addContainer", argsDecoder: addContainerConfigDecoder, resultDecoder: addItemResultDecoder },
-        bundleWorkspace: { name: "bundleWorkspace", argsDecoder: bundleConfigDecoder, resultDecoder: voidResultDecoder },
+        bundleWorkspace: { name: "bundleWorkspace", argsDecoder: bundleWorkspaceConfigDecoder, resultDecoder: voidResultDecoder },
+        bundleItem: { name: "bundleItem", argsDecoder: bundleItemConfigDecoder, resultDecoder: voidResultDecoder },
         hibernateWorkspace: { name: "hibernateWorkspace", argsDecoder: workspaceSelectorDecoder, resultDecoder: voidResultDecoder },
         resumeWorkspace: { name: "resumeWorkspace", argsDecoder: workspaceSelectorDecoder, resultDecoder: voidResultDecoder },
         lockWorkspace: { name: "lockWorkspace", argsDecoder: lockWorkspaceDecoder, resultDecoder: voidResultDecoder },
@@ -1574,7 +1610,9 @@
         registerShortcut: { name: "registerShortcut", argsDecoder: shortcutConfigDecoder, resultDecoder: voidResultDecoder },
         unregisterShortcut: { name: "unregisterShortcut", argsDecoder: shortcutConfigDecoder, resultDecoder: voidResultDecoder },
         showLoadingAnimation: { name: "showLoadingAnimation", argsDecoder: loadingAnimationConfigDecoder, resultDecoder: voidResultDecoder },
-        hideLoadingAnimation: { name: "hideLoadingAnimation", argsDecoder: loadingAnimationConfigDecoder, resultDecoder: voidResultDecoder }
+        hideLoadingAnimation: { name: "hideLoadingAnimation", argsDecoder: loadingAnimationConfigDecoder, resultDecoder: voidResultDecoder },
+        getPlatformFrameId: { name: "getPlatformFrameId", resultDecoder: getPlatformFrameIdResultDecoder },
+        operationCheck: { name: "operationCheck", argsDecoder: operationCheckConfigDecoder, resultDecoder: operationCheckResultDecoder },
     };
 
     class PromiseWrapper {
@@ -1831,7 +1869,8 @@
         }
         initiate(actualWindowId) {
             return __awaiter(this, void 0, void 0, function* () {
-                if (window.glue42gd) {
+                const desktopGlobal = window.glue42gd || window.iodesktop;
+                if (desktopGlobal) {
                     yield Promise.all(Object.values(OUTGOING_METHODS).map((method) => {
                         return this.verifyMethodLive(method.name);
                     }));
@@ -1840,7 +1879,8 @@
                     }));
                     return;
                 }
-                const systemId = window.glue42core.communicationId;
+                const browserGlobal = window.glue42core || window.iobrowser;
+                const systemId = browserGlobal.communicationId;
                 yield Promise.all([
                     this.verifyMethodLive(webPlatformMethodName, systemId),
                     this.verifyMethodLive(webPlatformWspStreamName, systemId)
@@ -1856,7 +1896,8 @@
         }
         subscribePlatform(eventCallback) {
             this.coreEventMethodInitiated = true;
-            const systemId = window.glue42core.communicationId;
+            const browserGlobal = window.glue42core || window.iobrowser;
+            const systemId = browserGlobal.communicationId;
             this.corePlatformSubPromise = this.agm.subscribe(webPlatformWspStreamName, systemId ? { target: { instance: systemId } } : undefined);
             this.corePlatformSubPromise
                 .then((sub) => {
@@ -1882,9 +1923,11 @@
         }
         transmitControl(operation, operationArguments) {
             return __awaiter(this, void 0, void 0, function* () {
-                const invocationArguments = window.glue42gd ? { operation, operationArguments } : { operation, domain: "workspaces", data: operationArguments };
-                const methodName = window.glue42gd ? OUTGOING_METHODS.control.name : webPlatformMethodName;
-                const platformTarget = window.glue42gd ? undefined : window.glue42core.communicationId;
+                const desktopGlobal = window.glue42gd || window.iodesktop;
+                const browserGlobal = window.glue42core || window.iobrowser;
+                const invocationArguments = desktopGlobal ? { operation, operationArguments } : { operation, domain: "workspaces", data: operationArguments };
+                const methodName = desktopGlobal ? OUTGOING_METHODS.control.name : webPlatformMethodName;
+                const platformTarget = desktopGlobal ? undefined : browserGlobal.communicationId;
                 let invocationResult;
                 const baseErrorMessage = `Internal Workspaces Communication Error. Attempted operation: ${JSON.stringify(invocationArguments)}. `;
                 try {
@@ -1945,36 +1988,36 @@
         }
     }
 
-    const privateData = new WeakMap();
+    const privateData$4 = new WeakMap();
     class ParentBuilder {
         constructor(definition, base) {
             const children = base.wrapChildren(definition.children);
             delete definition.children;
-            privateData.set(this, { base, children, definition });
+            privateData$4.set(this, { base, children, definition });
         }
         get type() {
-            return privateData.get(this).definition.type;
+            return privateData$4.get(this).definition.type;
         }
         addColumn(definition) {
-            const base = privateData.get(this).base;
-            return base.add("column", privateData.get(this).children, definition);
+            const base = privateData$4.get(this).base;
+            return base.add("column", privateData$4.get(this).children, definition);
         }
         addRow(definition) {
-            const base = privateData.get(this).base;
-            return base.add("row", privateData.get(this).children, definition);
+            const base = privateData$4.get(this).base;
+            return base.add("row", privateData$4.get(this).children, definition);
         }
         addGroup(definition) {
-            const base = privateData.get(this).base;
-            return base.add("group", privateData.get(this).children, definition);
+            const base = privateData$4.get(this).base;
+            return base.add("group", privateData$4.get(this).children, definition);
         }
         addWindow(definition) {
-            const base = privateData.get(this).base;
-            base.addWindow(privateData.get(this).children, definition);
+            const base = privateData$4.get(this).base;
+            base.addWindow(privateData$4.get(this).children, definition);
             return this;
         }
         serialize() {
-            const definition = privateData.get(this).definition;
-            definition.children = privateData.get(this).base.serializeChildren(privateData.get(this).children);
+            const definition = privateData$4.get(this).definition;
+            definition.children = privateData$4.get(this).base.serializeChildren(privateData$4.get(this).children);
             return definition;
         }
     }
@@ -2014,66 +2057,66 @@
         }
     }
 
-    const privateData$1 = new WeakMap();
+    const privateData$3 = new WeakMap();
     class WorkspaceBuilder {
         constructor(definition, base, controller) {
             const children = base.wrapChildren(definition.children);
             delete definition.children;
-            privateData$1.set(this, { base, children, definition, controller });
+            privateData$3.set(this, { base, children, definition, controller });
         }
         addColumn(definition) {
-            const children = privateData$1.get(this).children;
+            const children = privateData$3.get(this).children;
             const areAllColumns = children.every((child) => child instanceof ParentBuilder && child.type === "column");
             if (!areAllColumns) {
                 throw new Error("Cannot add a column to this workspace, because there are already children of another type");
             }
-            const base = privateData$1.get(this).base;
+            const base = privateData$3.get(this).base;
             return base.add("column", children, definition);
         }
         addRow(definition) {
-            const children = privateData$1.get(this).children;
+            const children = privateData$3.get(this).children;
             const areAllRows = children.every((child) => child instanceof ParentBuilder && child.type === "row");
             if (!areAllRows) {
                 throw new Error("Cannot add a row to this workspace, because there are already children of another type");
             }
-            const base = privateData$1.get(this).base;
+            const base = privateData$3.get(this).base;
             return base.add("row", children, definition);
         }
         addGroup(definition) {
-            const children = privateData$1.get(this).children;
+            const children = privateData$3.get(this).children;
             if (children.length !== 0) {
                 throw new Error("Cannot add a group to this workspace, because there are already defined children.");
             }
-            const base = privateData$1.get(this).base;
+            const base = privateData$3.get(this).base;
             return base.add("group", children, definition);
         }
         addWindow(definition) {
-            const children = privateData$1.get(this).children;
+            const children = privateData$3.get(this).children;
             if (children.length !== 0) {
                 throw new Error("Cannot add a window to this workspace, because there are already defined children.");
             }
-            const base = privateData$1.get(this).base;
+            const base = privateData$3.get(this).base;
             base.addWindow(children, definition);
             return this;
         }
         getChildAt(index) {
             nonNegativeNumberDecoder.runWithException(index);
-            const data = privateData$1.get(this).children;
+            const data = privateData$3.get(this).children;
             return data[index];
         }
         create(config) {
             return __awaiter(this, void 0, void 0, function* () {
                 const saveConfig = workspaceBuilderCreateConfigDecoder.runWithException(config);
-                const definition = privateData$1.get(this).definition;
-                definition.children = privateData$1.get(this).base.serializeChildren(privateData$1.get(this).children);
-                const controller = privateData$1.get(this).controller;
+                const definition = privateData$3.get(this).definition;
+                definition.children = privateData$3.get(this).base.serializeChildren(privateData$3.get(this).children);
+                const controller = privateData$3.get(this).controller;
                 return controller.createWorkspace(definition, saveConfig);
             });
         }
     }
 
     const privateData$2 = new WeakMap();
-    const getBase = (model) => {
+    const getBase$2 = (model) => {
         return privateData$2.get(model).base;
     };
     class Row {
@@ -2084,71 +2127,71 @@
             return "row";
         }
         get id() {
-            return getBase(this).getId(this);
+            return getBase$2(this).getId(this);
         }
         get frameId() {
-            return getBase(this).getFrameId(this);
+            return getBase$2(this).getFrameId(this);
         }
         get workspaceId() {
-            return getBase(this).getWorkspaceId(this);
+            return getBase$2(this).getWorkspaceId(this);
         }
         get positionIndex() {
-            return getBase(this).getPositionIndex(this);
+            return getBase$2(this).getPositionIndex(this);
         }
         get children() {
-            return getBase(this).getAllChildren(this);
+            return getBase$2(this).getAllChildren(this);
         }
         get parent() {
-            return getBase(this).getMyParent(this);
+            return getBase$2(this).getMyParent(this);
         }
         get frame() {
-            return getBase(this).getMyFrame(this);
+            return getBase$2(this).getMyFrame(this);
         }
         get workspace() {
-            return getBase(this).getMyWorkspace(this);
+            return getBase$2(this).getMyWorkspace(this);
         }
         get allowDrop() {
-            return getBase(this).getAllowDrop(this);
+            return getBase$2(this).getAllowDrop(this);
         }
         get allowSplitters() {
-            return getBase(this).getAllowSplitters(this);
+            return getBase$2(this).getAllowSplitters(this);
         }
         get minWidth() {
-            return getBase(this).getMinWidth(this);
+            return getBase$2(this).getMinWidth(this);
         }
         get minHeight() {
-            return getBase(this).getMinHeight(this);
+            return getBase$2(this).getMinHeight(this);
         }
         get maxWidth() {
-            return getBase(this).getMaxWidth(this);
+            return getBase$2(this).getMaxWidth(this);
         }
         get maxHeight() {
-            return getBase(this).getMaxHeight(this);
+            return getBase$2(this).getMaxHeight(this);
         }
         get width() {
-            return getBase(this).getWidthInPx(this);
+            return getBase$2(this).getWidthInPx(this);
         }
         get height() {
-            return getBase(this).getHeightInPx(this);
+            return getBase$2(this).getHeightInPx(this);
         }
         get isPinned() {
-            return getBase(this).getIsPinned(this);
+            return getBase$2(this).getIsPinned(this);
         }
         get isMaximized() {
-            return getBase(this).getIsMaximized(this);
+            return getBase$2(this).getIsMaximized(this);
         }
         get maximizationBoundary() {
-            return getBase(this).getMaximizationBoundary(this);
+            return getBase$2(this).getMaximizationBoundary(this);
         }
         addWindow(definition) {
-            return getBase(this).addWindow(this, definition, "row");
+            return getBase$2(this).addWindow(this, definition, "row");
         }
         addGroup(definition) {
             return __awaiter(this, void 0, void 0, function* () {
                 if ((definition === null || definition === void 0 ? void 0 : definition.type) && definition.type !== "group") {
                     throw new Error(`Expected a group definition, but received ${definition.type}`);
                 }
-                return getBase(this).addParent(this, "group", "row", definition);
+                return getBase$2(this).addParent(this, "group", "row", definition);
             });
         }
         addColumn(definition) {
@@ -2156,7 +2199,7 @@
                 if ((definition === null || definition === void 0 ? void 0 : definition.type) && definition.type !== "column") {
                     throw new Error(`Expected a column definition, but received ${definition.type}`);
                 }
-                return getBase(this).addParent(this, "column", "row", definition);
+                return getBase$2(this).addParent(this, "column", "row", definition);
             });
         }
         addRow() {
@@ -2165,16 +2208,16 @@
             });
         }
         removeChild(predicate) {
-            return getBase(this).removeChild(this, predicate);
+            return getBase$2(this).removeChild(this, predicate);
         }
         maximize() {
-            return getBase(this).maximize(this);
+            return getBase$2(this).maximize(this);
         }
         restore() {
-            return getBase(this).restore(this);
+            return getBase$2(this).restore(this);
         }
         close() {
-            return getBase(this).close(this);
+            return getBase$2(this).close(this);
         }
         lock(config) {
             let lockConfigResult = undefined;
@@ -2189,18 +2232,17 @@
                 lockConfigResult = config;
             }
             const verifiedConfig = lockConfigResult === undefined ? undefined : rowLockConfigDecoder.runWithException(lockConfigResult);
-            return getBase(this).lockContainer(this, verifiedConfig);
+            return getBase$2(this).lockContainer(this, verifiedConfig);
         }
         setHeight(height) {
             return __awaiter(this, void 0, void 0, function* () {
                 nonNegativeNumberDecoder.runWithException(height);
-                return getBase(this).setHeight(this, height);
+                return getBase$2(this).setHeight(this, height);
             });
         }
         onLockConfigurationChanged(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const id = getBase(this).getId(this);
                 const wrappedCallback = () => __awaiter(this, void 0, void 0, function* () {
                     yield this.workspace.refreshReference();
                     callback({
@@ -2214,25 +2256,25 @@
                     eventType: "container",
                     scope: "container"
                 };
-                const unsubscribe = yield getBase(this).processLocalSubscription(this, config);
+                const unsubscribe = yield getBase$2(this).processLocalSubscription(this, config);
                 return unsubscribe;
             });
         }
         setMaximizationBoundary(config) {
             return __awaiter(this, void 0, void 0, function* () {
                 const validatedConfig = setMaximizationBoundaryAPIConfigDecoder.runWithException(config);
-                return getBase(this).setMaximizationBoundary(this, validatedConfig);
+                return getBase$2(this).setMaximizationBoundary(this, validatedConfig);
             });
         }
     }
 
-    const privateData$3 = new WeakMap();
+    const privateData$1 = new WeakMap();
     const getBase$1 = (model) => {
-        return privateData$3.get(model).base;
+        return privateData$1.get(model).base;
     };
     class Column {
         constructor(base) {
-            privateData$3.set(this, { base });
+            privateData$1.set(this, { base });
         }
         get type() {
             return "column";
@@ -2305,7 +2347,7 @@
                 return getBase$1(this).addParent(this, "group", "column", definition);
             });
         }
-        addColumn(definition) {
+        addColumn() {
             return __awaiter(this, void 0, void 0, function* () {
                 throw new Error("Adding columns as column children is not supported");
             });
@@ -2354,7 +2396,6 @@
         onLockConfigurationChanged(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const id = getBase$1(this).getId(this);
                 const wrappedCallback = () => __awaiter(this, void 0, void 0, function* () {
                     yield this.workspace.refreshReference();
                     callback({
@@ -2380,97 +2421,97 @@
         }
     }
 
-    const privateData$4 = new WeakMap();
-    const getBase$2 = (model) => {
-        return privateData$4.get(model).base;
+    const privateData = new WeakMap();
+    const getBase = (model) => {
+        return privateData.get(model).base;
     };
     class Group {
         constructor(base) {
-            privateData$4.set(this, { base });
+            privateData.set(this, { base });
         }
         get type() {
             return "group";
         }
         get id() {
-            return getBase$2(this).getId(this);
+            return getBase(this).getId(this);
         }
         get frameId() {
-            return getBase$2(this).getFrameId(this);
+            return getBase(this).getFrameId(this);
         }
         get workspaceId() {
-            return getBase$2(this).getWorkspaceId(this);
+            return getBase(this).getWorkspaceId(this);
         }
         get positionIndex() {
-            return getBase$2(this).getPositionIndex(this);
+            return getBase(this).getPositionIndex(this);
         }
         get children() {
-            return getBase$2(this).getAllChildren(this);
+            return getBase(this).getAllChildren(this);
         }
         get parent() {
-            return getBase$2(this).getMyParent(this);
+            return getBase(this).getMyParent(this);
         }
         get frame() {
-            return getBase$2(this).getMyFrame(this);
+            return getBase(this).getMyFrame(this);
         }
         get workspace() {
-            return getBase$2(this).getMyWorkspace(this);
+            return getBase(this).getMyWorkspace(this);
         }
         get allowExtract() {
-            return getBase$2(this).getAllowExtract(this);
+            return getBase(this).getAllowExtract(this);
         }
         get allowReorder() {
-            return getBase$2(this).getAllowReorder(this);
+            return getBase(this).getAllowReorder(this);
         }
         get allowDropLeft() {
-            return getBase$2(this).getAllowDropLeft(this);
+            return getBase(this).getAllowDropLeft(this);
         }
         get allowDropRight() {
-            return getBase$2(this).getAllowDropRight(this);
+            return getBase(this).getAllowDropRight(this);
         }
         get allowDropTop() {
-            return getBase$2(this).getAllowDropTop(this);
+            return getBase(this).getAllowDropTop(this);
         }
         get allowDropBottom() {
-            return getBase$2(this).getAllowDropBottom(this);
+            return getBase(this).getAllowDropBottom(this);
         }
         get allowDropHeader() {
-            return getBase$2(this).getAllowDropHeader(this);
+            return getBase(this).getAllowDropHeader(this);
         }
         get allowDrop() {
-            return getBase$2(this).getAllowDrop(this);
+            return getBase(this).getAllowDrop(this);
         }
         get showMaximizeButton() {
-            return getBase$2(this).getShowMaximizeButton(this);
+            return getBase(this).getShowMaximizeButton(this);
         }
         get showEjectButton() {
-            return getBase$2(this).getShowEjectButton(this);
+            return getBase(this).getShowEjectButton(this);
         }
         get showAddWindowButton() {
-            return getBase$2(this).getShowAddWindowButton(this);
+            return getBase(this).getShowAddWindowButton(this);
         }
         get minWidth() {
-            return getBase$2(this).getMinWidth(this);
+            return getBase(this).getMinWidth(this);
         }
         get minHeight() {
-            return getBase$2(this).getMinHeight(this);
+            return getBase(this).getMinHeight(this);
         }
         get maxWidth() {
-            return getBase$2(this).getMaxWidth(this);
+            return getBase(this).getMaxWidth(this);
         }
         get maxHeight() {
-            return getBase$2(this).getMaxHeight(this);
+            return getBase(this).getMaxHeight(this);
         }
         get width() {
-            return getBase$2(this).getWidthInPx(this);
+            return getBase(this).getWidthInPx(this);
         }
         get height() {
-            return getBase$2(this).getHeightInPx(this);
+            return getBase(this).getHeightInPx(this);
         }
         get isMaximized() {
-            return getBase$2(this).getIsMaximized(this);
+            return getBase(this).getIsMaximized(this);
         }
         addWindow(definition) {
-            return getBase$2(this).addWindow(this, definition, "group");
+            return getBase(this).addWindow(this, definition, "group");
         }
         addGroup() {
             return __awaiter(this, void 0, void 0, function* () {
@@ -2488,16 +2529,16 @@
             });
         }
         removeChild(predicate) {
-            return getBase$2(this).removeChild(this, predicate);
+            return getBase(this).removeChild(this, predicate);
         }
         maximize() {
-            return getBase$2(this).maximize(this);
+            return getBase(this).maximize(this);
         }
         restore() {
-            return getBase$2(this).restore(this);
+            return getBase(this).restore(this);
         }
         close() {
-            return getBase$2(this).close(this);
+            return getBase(this).close(this);
         }
         lock(config) {
             let lockConfigResult = undefined;
@@ -2521,7 +2562,7 @@
                 lockConfigResult = config;
             }
             const verifiedConfig = lockConfigResult === undefined ? undefined : groupLockConfigDecoder.runWithException(lockConfigResult);
-            return getBase$2(this).lockContainer(this, verifiedConfig);
+            return getBase(this).lockContainer(this, verifiedConfig);
         }
         setSize(config) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -2529,13 +2570,24 @@
                 if (!verifiedConfig.width && !verifiedConfig.height) {
                     throw new Error("Expected either width or height to be passed.");
                 }
-                return getBase$2(this).setSize(this, config.width, config.height);
+                return getBase(this).setSize(this, config.width, config.height);
+            });
+        }
+        bundleToRow() {
+            return __awaiter(this, void 0, void 0, function* () {
+                yield getBase(this).bundleTo(this, "row");
+                yield this.workspace.refreshReference();
+            });
+        }
+        bundleToColumn() {
+            return __awaiter(this, void 0, void 0, function* () {
+                yield getBase(this).bundleTo(this, "column");
+                yield this.workspace.refreshReference();
             });
         }
         onLockConfigurationChanged(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const id = getBase$2(this).getId(this);
                 const wrappedCallback = () => __awaiter(this, void 0, void 0, function* () {
                     yield this.workspace.refreshReference();
                     callback({
@@ -2558,115 +2610,118 @@
                     eventType: "container",
                     scope: "container"
                 };
-                const unsubscribe = yield getBase$2(this).processLocalSubscription(this, config);
+                const unsubscribe = yield getBase(this).processLocalSubscription(this, config);
                 return unsubscribe;
             });
         }
     }
 
-    const data = new WeakMap();
-    const getData = (model) => {
-        return data.get(model).manager.getWorkspaceData(model);
+    const data$3 = new WeakMap();
+    const getData$3 = (model) => {
+        return data$3.get(model).manager.getWorkspaceData(model);
     };
     const getDataManager = (model) => {
-        return data.get(model).manager;
+        return data$3.get(model).manager;
     };
     class Workspace {
         constructor(dataManager) {
-            data.set(this, { manager: dataManager });
+            data$3.set(this, { manager: dataManager });
         }
         get id() {
-            return getData(this).id;
+            return getData$3(this).id;
         }
         get frameId() {
-            return getData(this).config.frameId;
+            return getData$3(this).config.frameId;
         }
         get positionIndex() {
-            return getData(this).config.positionIndex;
+            return getData$3(this).config.positionIndex;
         }
         get title() {
-            return getData(this).config.title;
+            return getData$3(this).config.title;
         }
         get layoutName() {
-            return getData(this).config.layoutName;
+            return getData$3(this).config.layoutName;
         }
         get isHibernated() {
-            return getData(this).config.isHibernated;
+            return getData$3(this).config.isHibernated;
         }
         get isSelected() {
-            return getData(this).config.isSelected;
+            return getData$3(this).config.isSelected;
         }
         get children() {
-            return getData(this).children;
+            return getData$3(this).children;
         }
         get frame() {
-            return getData(this).frame;
+            return getData$3(this).frame;
         }
         get allowSplitters() {
-            return getData(this).config.allowSplitters;
+            return getData$3(this).config.allowSplitters;
+        }
+        get allowSystemHibernation() {
+            return getData$3(this).config.allowSystemHibernation;
         }
         get allowDrop() {
-            return getData(this).config.allowDrop;
+            return getData$3(this).config.allowDrop;
         }
         get allowDropLeft() {
-            return getData(this).config.allowDropLeft;
+            return getData$3(this).config.allowDropLeft;
         }
         get allowDropTop() {
-            return getData(this).config.allowDropTop;
+            return getData$3(this).config.allowDropTop;
         }
         get allowDropRight() {
-            return getData(this).config.allowDropRight;
+            return getData$3(this).config.allowDropRight;
         }
         get allowDropBottom() {
-            return getData(this).config.allowDropBottom;
+            return getData$3(this).config.allowDropBottom;
         }
         get allowExtract() {
-            return getData(this).config.allowExtract;
+            return getData$3(this).config.allowExtract;
         }
         get allowWindowReorder() {
-            return getData(this).config.allowWindowReorder;
+            return getData$3(this).config.allowWindowReorder;
         }
         get showCloseButton() {
-            return getData(this).config.showCloseButton;
+            return getData$3(this).config.showCloseButton;
         }
         get showSaveButton() {
-            return getData(this).config.showSaveButton;
+            return getData$3(this).config.showSaveButton;
         }
         get allowWorkspaceTabReorder() {
-            return getData(this).config.allowWorkspaceTabReorder;
+            return getData$3(this).config.allowWorkspaceTabReorder;
         }
         get allowWorkspaceTabExtract() {
-            return getData(this).config.allowWorkspaceTabExtract;
+            return getData$3(this).config.allowWorkspaceTabExtract;
         }
         get minWidth() {
-            return getData(this).config.minWidth;
+            return getData$3(this).config.minWidth;
         }
         get minHeight() {
-            return getData(this).config.minHeight;
+            return getData$3(this).config.minHeight;
         }
         get maxWidth() {
-            return getData(this).config.maxWidth;
+            return getData$3(this).config.maxWidth;
         }
         get maxHeight() {
-            return getData(this).config.maxHeight;
+            return getData$3(this).config.maxHeight;
         }
         get width() {
-            return getData(this).config.widthInPx;
+            return getData$3(this).config.widthInPx;
         }
         get height() {
-            return getData(this).config.heightInPx;
+            return getData$3(this).config.heightInPx;
         }
         get showWindowCloseButtons() {
-            return getData(this).config.showWindowCloseButtons;
+            return getData$3(this).config.showWindowCloseButtons;
         }
         get showEjectButtons() {
-            return getData(this).config.showEjectButtons;
+            return getData$3(this).config.showEjectButtons;
         }
         get showAddWindowButtons() {
-            return getData(this).config.showAddWindowButtons;
+            return getData$3(this).config.showAddWindowButtons;
         }
         get isPinned() {
-            return getData(this).config.isPinned;
+            return getData$3(this).config.isPinned;
         }
         removeChild(predicate) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -2682,7 +2737,7 @@
         remove(predicate) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(predicate);
-                const controller = getData(this).controller;
+                const controller = getData$3(this).controller;
                 const child = controller.iterateFindChild(this.children, predicate);
                 yield child.close();
                 yield this.refreshReference();
@@ -2690,15 +2745,18 @@
         }
         focus() {
             return __awaiter(this, void 0, void 0, function* () {
-                yield getData(this).controller.focusItem(this.id);
+                yield getData$3(this).controller.focusItem(this.id);
                 yield this.refreshReference();
             });
         }
         close() {
             return __awaiter(this, void 0, void 0, function* () {
-                const controller = getData(this).controller;
-                const workspaces = yield getData(this).frame.workspaces();
-                const shouldCloseFrame = workspaces.length === 1 && workspaces.every((wsp) => wsp.id === this.id);
+                const controller = getData$3(this).controller;
+                const workspaces = yield getData$3(this).frame.workspaces();
+                const platformFrameId = (yield controller.getPlatformFrameId()).id;
+                const shouldCloseFrame = workspaces.length === 1 &&
+                    workspaces.every((wsp) => wsp.id === this.id) &&
+                    platformFrameId !== this.frame.id;
                 if (shouldCloseFrame) {
                     return this.frame.close();
                 }
@@ -2706,43 +2764,43 @@
             });
         }
         snapshot() {
-            return getData(this).controller.getSnapshot(this.id, "workspace");
+            return getData$3(this).controller.getSnapshot(this.id, "workspace");
         }
         saveLayout(name, config) {
             return __awaiter(this, void 0, void 0, function* () {
                 nonEmptyStringDecoder.runWithException(name);
-                yield getData(this).controller.saveLayout({ name, workspaceId: this.id, saveContext: config === null || config === void 0 ? void 0 : config.saveContext, metadata: config === null || config === void 0 ? void 0 : config.metadata });
+                yield getData$3(this).controller.saveLayout({ name, workspaceId: this.id, saveContext: config === null || config === void 0 ? void 0 : config.saveContext, metadata: config === null || config === void 0 ? void 0 : config.metadata });
             });
         }
         setTitle(title) {
             return __awaiter(this, void 0, void 0, function* () {
                 nonEmptyStringDecoder.runWithException(title);
-                const controller = getData(this).controller;
+                const controller = getData$3(this).controller;
                 yield controller.setItemTitle(this.id, title);
                 yield this.refreshReference();
             });
         }
         getContext() {
-            const controller = getData(this).controller;
+            const controller = getData$3(this).controller;
             return controller.getWorkspaceContext(this.id);
         }
         setContext(data) {
-            const controller = getData(this).controller;
+            const controller = getData$3(this).controller;
             return controller.setWorkspaceContext(this.id, data);
         }
         updateContext(data) {
-            const controller = getData(this).controller;
+            const controller = getData$3(this).controller;
             return controller.updateWorkspaceContext(this.id, data);
         }
         onContextUpdated(callback) {
-            const controller = getData(this).controller;
+            const controller = getData$3(this).controller;
             return controller.subscribeWorkspaceContextUpdated(this.id, callback);
         }
         refreshReference() {
             return __awaiter(this, void 0, void 0, function* () {
-                const newSnapshot = (yield getData(this).controller.getSnapshot(this.id, "workspace"));
-                const currentChildrenFlat = getData(this).controller.flatChildren(getData(this).children);
-                const newChildren = getData(this).controller.refreshChildren({
+                const newSnapshot = (yield getData$3(this).controller.getSnapshot(this.id, "workspace"));
+                const currentChildrenFlat = getData$3(this).controller.flatChildren(getData$3(this).children);
+                const newChildren = getData$3(this).controller.refreshChildren({
                     existingChildren: currentChildrenFlat,
                     workspace: this,
                     parent: this,
@@ -2758,7 +2816,7 @@
                     const frameCreateConfig = {
                         summary: newSnapshot.frameSummary
                     };
-                    const newFrame = getData(this).ioc.getModel("frame", frameCreateConfig);
+                    const newFrame = getData$3(this).ioc.getModel("frame", frameCreateConfig);
                     actualFrame = newFrame;
                 }
                 getDataManager(this).remapWorkspace(this, {
@@ -2770,26 +2828,26 @@
         }
         getIcon() {
             return __awaiter(this, void 0, void 0, function* () {
-                const controller = getData(this).controller;
+                const controller = getData$3(this).controller;
                 return controller.getWorkspaceIcon(this.id);
             });
         }
         setIcon(icon) {
             return __awaiter(this, void 0, void 0, function* () {
-                const controller = getData(this).controller;
+                const controller = getData$3(this).controller;
                 return controller.setWorkspaceIcon(this.id, icon);
             });
         }
         getBox(predicate) {
             checkThrowCallback(predicate);
-            const children = getData(this).children;
-            const controller = getData(this).controller;
+            const children = getData$3(this).children;
+            const controller = getData$3(this).controller;
             return controller.iterateFindChild(children, (child) => child.type !== "window" && predicate(child));
         }
         getAllBoxes(predicate) {
             checkThrowCallback(predicate, true);
-            const children = getData(this).children;
-            const controller = getData(this).controller;
+            const children = getData$3(this).children;
+            const controller = getData$3(this).controller;
             const allParents = controller.iterateFilterChildren(children, (child) => child.type !== "window");
             if (!predicate) {
                 return allParents;
@@ -2831,14 +2889,14 @@
         }
         getWindow(predicate) {
             checkThrowCallback(predicate);
-            const children = getData(this).children;
-            const controller = getData(this).controller;
+            const children = getData$3(this).children;
+            const controller = getData$3(this).controller;
             return controller.iterateFindChild(children, (child) => child.type === "window" && predicate(child));
         }
         getAllWindows(predicate) {
             checkThrowCallback(predicate, true);
-            const children = getData(this).children;
-            const controller = getData(this).controller;
+            const children = getData$3(this).children;
+            const controller = getData$3(this).controller;
             const allWindows = controller.iterateFilterChildren(children, (child) => child.type === "window");
             if (!predicate) {
                 return allWindows;
@@ -2846,38 +2904,38 @@
             return allWindows.filter(predicate);
         }
         addRow(definition) {
-            return getData(this).base.addParent(this, "row", "workspace", definition);
+            return getData$3(this).base.addParent(this, "row", "workspace", definition);
         }
         addColumn(definition) {
-            return getData(this).base.addParent(this, "column", "workspace", definition);
+            return getData$3(this).base.addParent(this, "column", "workspace", definition);
         }
         addGroup(definition) {
-            return getData(this).base.addParent(this, "group", "workspace", definition);
+            return getData$3(this).base.addParent(this, "group", "workspace", definition);
         }
         addWindow(definition) {
-            return getData(this).base.addWindow(this, definition, "workspace");
+            return getData$3(this).base.addWindow(this, definition, "workspace");
         }
         bundleToRow() {
             return __awaiter(this, void 0, void 0, function* () {
-                yield getData(this).controller.bundleTo("row", this.id);
+                yield getData$3(this).controller.bundleWorkspaceTo("row", this.id);
                 yield this.refreshReference();
             });
         }
         bundleToColumn() {
             return __awaiter(this, void 0, void 0, function* () {
-                yield getData(this).controller.bundleTo("column", this.id);
+                yield getData$3(this).controller.bundleWorkspaceTo("column", this.id);
                 yield this.refreshReference();
             });
         }
         hibernate() {
             return __awaiter(this, void 0, void 0, function* () {
-                yield getData(this).controller.hibernateWorkspace(this.id);
+                yield getData$3(this).controller.hibernateWorkspace(this.id);
                 yield this.refreshReference();
             });
         }
         resume() {
             return __awaiter(this, void 0, void 0, function* () {
-                yield getData(this).controller.resumeWorkspace(this.id);
+                yield getData$3(this).controller.resumeWorkspace(this.id);
                 yield this.refreshReference();
             });
         }
@@ -2891,6 +2949,7 @@
                         allowDropTop: this.allowDropTop,
                         allowDropRight: this.allowDropRight,
                         allowDropBottom: this.allowDropBottom,
+                        allowSystemHibernation: this.allowSystemHibernation,
                         allowExtract: this.allowExtract,
                         allowWindowReorder: this.allowWindowReorder,
                         allowSplitters: this.allowSplitters,
@@ -2908,43 +2967,45 @@
                     lockConfigResult = config;
                 }
                 const verifiedConfig = lockConfigResult === undefined ? undefined : workspaceLockConfigDecoder.runWithException(lockConfigResult);
-                yield getData(this).controller.lockWorkspace(this.id, verifiedConfig);
+                yield getData$3(this).controller.lockWorkspace(this.id, verifiedConfig);
                 yield this.refreshReference();
             });
         }
         pin(options) {
             return __awaiter(this, void 0, void 0, function* () {
                 workspacePinOptionsDecoder.runWithException(options);
-                yield getData(this).controller.pinWorkspace(this.id, options === null || options === void 0 ? void 0 : options.icon);
+                yield getData$3(this).controller.pinWorkspace(this.id, options === null || options === void 0 ? void 0 : options.icon);
                 yield this.refreshReference();
             });
         }
         unpin() {
             return __awaiter(this, void 0, void 0, function* () {
-                yield getData(this).controller.unpinWorkspace(this.id);
+                yield getData$3(this).controller.unpinWorkspace(this.id);
                 yield this.refreshReference();
             });
         }
         showLoadingAnimation() {
             return __awaiter(this, void 0, void 0, function* () {
-                if (!window.glue42gd) {
-                    throw new Error("Not supported in Glue42 Core");
+                const desktopGlobal = window.glue42gd || window.iodesktop;
+                if (!desktopGlobal) {
+                    throw new Error("Not supported in IO Connect Browser");
                 }
-                yield getData(this).controller.showWorkspaceLoadingAnimation(this.id);
+                yield getData$3(this).controller.showWorkspaceLoadingAnimation(this.id);
             });
         }
         hideLoadingAnimation() {
             return __awaiter(this, void 0, void 0, function* () {
-                if (!window.glue42gd) {
-                    throw new Error("Not supported in Glue42 Core");
+                const desktopGlobal = window.glue42gd || window.iodesktop;
+                if (!desktopGlobal) {
+                    throw new Error("Not supported in IO Connect Browser");
                 }
-                yield getData(this).controller.hideWorkspaceLoadingAnimation(this.id);
+                yield getData$3(this).controller.hideWorkspaceLoadingAnimation(this.id);
             });
         }
         onClosed(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const id = getData(this).id;
+                const id = getData$3(this).id;
                 const wrappedCallback = (payload) => __awaiter(this, void 0, void 0, function* () {
                     callback({ frameId: payload.frameSummary.id, workspaceId: payload.workspaceSummary.id, frameBounds: payload.frameBounds });
                 });
@@ -2955,14 +3016,52 @@
                     scopeId: id,
                     callback: wrappedCallback
                 };
-                const unsubscribe = yield getData(this).controller.processLocalSubscription(config, id);
+                const unsubscribe = yield getData$3(this).controller.processLocalSubscription(config, id);
+                return unsubscribe;
+            });
+        }
+        onHibernated(callback) {
+            return __awaiter(this, void 0, void 0, function* () {
+                checkThrowCallback(callback);
+                const id = getData$3(this).id;
+                const wrappedCallback = () => __awaiter(this, void 0, void 0, function* () {
+                    yield this.refreshReference();
+                    callback();
+                });
+                const config = {
+                    action: "hibernated",
+                    eventType: "workspace",
+                    scope: "workspace",
+                    scopeId: id,
+                    callback: wrappedCallback
+                };
+                const unsubscribe = yield getData$3(this).controller.processLocalSubscription(config, id);
+                return unsubscribe;
+            });
+        }
+        onResumed(callback) {
+            return __awaiter(this, void 0, void 0, function* () {
+                checkThrowCallback(callback);
+                const id = getData$3(this).id;
+                const wrappedCallback = () => __awaiter(this, void 0, void 0, function* () {
+                    yield this.refreshReference();
+                    callback();
+                });
+                const config = {
+                    action: "resumed",
+                    eventType: "workspace",
+                    scope: "workspace",
+                    scopeId: id,
+                    callback: wrappedCallback
+                };
+                const unsubscribe = yield getData$3(this).controller.processLocalSubscription(config, id);
                 return unsubscribe;
             });
         }
         onWindowAdded(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const id = getData(this).id;
+                const id = getData$3(this).id;
                 const wrappedCallback = (payload) => __awaiter(this, void 0, void 0, function* () {
                     yield this.refreshReference();
                     const windowParent = this.getBox((parent) => parent.id === payload.windowSummary.parentId);
@@ -2978,14 +3077,14 @@
                     scopeId: id,
                     callback: wrappedCallback
                 };
-                const unsubscribe = yield getData(this).controller.processLocalSubscription(config, id);
+                const unsubscribe = yield getData$3(this).controller.processLocalSubscription(config, id);
                 return unsubscribe;
             });
         }
         onWindowRemoved(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const id = getData(this).id;
+                const id = getData$3(this).id;
                 const wrappedCallback = (payload) => __awaiter(this, void 0, void 0, function* () {
                     yield this.refreshReference();
                     const { windowId, workspaceId, frameId } = payload.windowSummary.config;
@@ -2998,14 +3097,14 @@
                     scopeId: id,
                     callback: wrappedCallback
                 };
-                const unsubscribe = yield getData(this).controller.processLocalSubscription(config, id);
+                const unsubscribe = yield getData$3(this).controller.processLocalSubscription(config, id);
                 return unsubscribe;
             });
         }
         onWindowLoaded(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const id = getData(this).id;
+                const id = getData$3(this).id;
                 const wrappedCallback = (payload) => __awaiter(this, void 0, void 0, function* () {
                     yield this.refreshReference();
                     const foundWindow = this.getWindow((win) => {
@@ -3020,14 +3119,14 @@
                     scopeId: id,
                     callback: wrappedCallback
                 };
-                const unsubscribe = yield getData(this).controller.processLocalSubscription(config, id);
+                const unsubscribe = yield getData$3(this).controller.processLocalSubscription(config, id);
                 return unsubscribe;
             });
         }
         onWindowMaximized(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const id = getData(this).id;
+                const id = getData$3(this).id;
                 const wrappedCallback = (payload) => __awaiter(this, void 0, void 0, function* () {
                     yield this.refreshReference();
                     const windowParent = this.getBox((parent) => parent.id === payload.windowSummary.parentId);
@@ -3043,14 +3142,14 @@
                     scopeId: id,
                     callback: wrappedCallback
                 };
-                const unsubscribe = yield getData(this).controller.processLocalSubscription(config, id);
+                const unsubscribe = yield getData$3(this).controller.processLocalSubscription(config, id);
                 return unsubscribe;
             });
         }
         onWindowRestored(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const id = getData(this).id;
+                const id = getData$3(this).id;
                 const wrappedCallback = (payload) => __awaiter(this, void 0, void 0, function* () {
                     yield this.refreshReference();
                     const windowParent = this.getBox((parent) => parent.id === payload.windowSummary.parentId);
@@ -3066,15 +3165,38 @@
                     scopeId: id,
                     callback: wrappedCallback
                 };
-                const unsubscribe = yield getData(this).controller.processLocalSubscription(config, id);
+                const unsubscribe = yield getData$3(this).controller.processLocalSubscription(config, id);
+                return unsubscribe;
+            });
+        }
+        onWindowSelected(callback) {
+            return __awaiter(this, void 0, void 0, function* () {
+                checkThrowCallback(callback);
+                const id = getData$3(this).id;
+                const wrappedCallback = (payload) => __awaiter(this, void 0, void 0, function* () {
+                    yield this.refreshReference();
+                    const windowParent = this.getBox((parent) => parent.id === payload.windowSummary.parentId);
+                    const foundWindow = windowParent.children.find((child) => {
+                        return child.type === "window" && child.elementId === payload.windowSummary.itemId;
+                    });
+                    callback(foundWindow);
+                });
+                const config = {
+                    action: "selected",
+                    eventType: "window",
+                    scope: "workspace",
+                    scopeId: id,
+                    callback: wrappedCallback
+                };
+                const unsubscribe = yield getData$3(this).controller.processLocalSubscription(config, id);
                 return unsubscribe;
             });
         }
         onLockConfigurationChanged(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const id = getData(this).id;
-                const wrappedCallback = (payload) => __awaiter(this, void 0, void 0, function* () {
+                const id = getData$3(this).id;
+                const wrappedCallback = () => __awaiter(this, void 0, void 0, function* () {
                     yield this.refreshReference();
                     callback({
                         allowDrop: this.allowDrop,
@@ -3082,6 +3204,7 @@
                         allowDropTop: this.allowDropTop,
                         allowDropRight: this.allowDropRight,
                         allowDropBottom: this.allowDropBottom,
+                        allowSystemHibernation: this.allowSystemHibernation,
                         allowExtract: this.allowExtract,
                         allowSplitters: this.allowSplitters,
                         allowWindowReorder: this.allowWindowReorder,
@@ -3101,118 +3224,118 @@
                     scopeId: id,
                     callback: wrappedCallback
                 };
-                const unsubscribe = yield getData(this).controller.processLocalSubscription(config, id);
+                const unsubscribe = yield getData$3(this).controller.processLocalSubscription(config, id);
                 return unsubscribe;
             });
         }
     }
 
-    const data$1 = new WeakMap();
-    const getData$1 = (model) => {
-        return data$1.get(model).manager.getWindowData(model);
+    const data$2 = new WeakMap();
+    const getData$2 = (model) => {
+        return data$2.get(model).manager.getWindowData(model);
     };
     class Window {
         constructor(dataManager) {
-            data$1.set(this, { manager: dataManager });
+            data$2.set(this, { manager: dataManager });
         }
         get id() {
-            return getData$1(this).config.windowId;
+            return getData$2(this).config.windowId;
         }
         get elementId() {
-            return getData$1(this).id;
+            return getData$2(this).id;
         }
         get type() {
             return "window";
         }
         get frameId() {
-            return getData$1(this).frame.id;
+            return getData$2(this).frame.id;
         }
         get workspaceId() {
-            return getData$1(this).workspace.id;
+            return getData$2(this).workspace.id;
         }
         get positionIndex() {
-            return getData$1(this).config.positionIndex;
+            return getData$2(this).config.positionIndex;
         }
         get isMaximized() {
-            return getData$1(this).config.isMaximized;
+            return getData$2(this).config.isMaximized;
         }
         get isLoaded() {
-            return getData$1(this).controller.checkIsWindowLoaded(this.id);
+            return getData$2(this).controller.checkIsWindowLoaded(this.id);
         }
         get isSelected() {
-            return getData$1(this).config.isSelected;
+            return getData$2(this).config.isSelected;
         }
         get focused() {
-            return this.isLoaded ? this.getGdWindow().isFocused : false;
+            return this.getGdWindow().isFocused;
         }
         get title() {
-            return getData$1(this).config.title;
+            return getData$2(this).config.title;
         }
         get allowExtract() {
-            return getData$1(this).config.allowExtract;
+            return getData$2(this).config.allowExtract;
         }
         get allowReorder() {
-            return getData$1(this).config.allowReorder;
+            return getData$2(this).config.allowReorder;
         }
         get showCloseButton() {
-            return getData$1(this).config.showCloseButton;
+            return getData$2(this).config.showCloseButton;
         }
         get width() {
-            return getData$1(this).config.widthInPx;
+            return getData$2(this).config.widthInPx;
         }
         get height() {
-            return getData$1(this).config.heightInPx;
+            return getData$2(this).config.heightInPx;
         }
         get minWidth() {
-            return getData$1(this).config.minWidth;
+            return getData$2(this).config.minWidth;
         }
         get minHeight() {
-            return getData$1(this).config.minHeight;
+            return getData$2(this).config.minHeight;
         }
         get maxWidth() {
-            return getData$1(this).config.maxWidth;
+            return getData$2(this).config.maxWidth;
         }
         get maxHeight() {
-            return getData$1(this).config.maxHeight;
+            return getData$2(this).config.maxHeight;
         }
         get workspace() {
-            return getData$1(this).workspace;
+            return getData$2(this).workspace;
         }
         get frame() {
-            return getData$1(this).frame;
+            return getData$2(this).frame;
         }
         get parent() {
-            return getData$1(this).parent;
+            return getData$2(this).parent;
         }
         get appName() {
-            return getData$1(this).config.appName;
+            return getData$2(this).config.appName;
         }
         forceLoad() {
             return __awaiter(this, void 0, void 0, function* () {
                 if (this.isLoaded) {
                     return;
                 }
-                const controller = getData$1(this).controller;
-                const itemId = getData$1(this).id;
+                const controller = getData$2(this).controller;
+                const itemId = getData$2(this).id;
                 const windowId = yield controller.forceLoadWindow(itemId);
-                getData$1(this).config.windowId = windowId;
+                getData$2(this).config.windowId = windowId;
                 yield this.workspace.refreshReference();
             });
         }
         focus() {
             return __awaiter(this, void 0, void 0, function* () {
-                const id = getData$1(this).id;
-                const controller = getData$1(this).controller;
+                const id = getData$2(this).id;
+                const controller = getData$2(this).controller;
                 yield controller.focusItem(id);
                 yield this.workspace.refreshReference();
             });
         }
         close() {
             return __awaiter(this, void 0, void 0, function* () {
-                const id = getData$1(this).id;
-                const controller = getData$1(this).controller;
+                const id = getData$2(this).id;
+                const controller = getData$2(this).controller;
                 yield controller.closeItem(id);
-                yield getData$1(this)
+                yield getData$2(this)
                     .parent
                     .removeChild((child) => child.id === id);
                 yield this.workspace.refreshReference();
@@ -3221,24 +3344,24 @@
         setTitle(title) {
             return __awaiter(this, void 0, void 0, function* () {
                 nonEmptyStringDecoder.runWithException(title);
-                const itemId = getData$1(this).id;
-                const controller = getData$1(this).controller;
+                const itemId = getData$2(this).id;
+                const controller = getData$2(this).controller;
                 yield controller.setItemTitle(itemId, title);
                 yield this.workspace.refreshReference();
             });
         }
         maximize() {
             return __awaiter(this, void 0, void 0, function* () {
-                const id = getData$1(this).id;
-                const controller = getData$1(this).controller;
+                const id = getData$2(this).id;
+                const controller = getData$2(this).controller;
                 yield controller.maximizeItem(id);
                 yield this.workspace.refreshReference();
             });
         }
         restore() {
             return __awaiter(this, void 0, void 0, function* () {
-                const id = getData$1(this).id;
-                const controller = getData$1(this).controller;
+                const id = getData$2(this).id;
+                const controller = getData$2(this).controller;
                 yield controller.restoreItem(id);
                 yield this.workspace.refreshReference();
             });
@@ -3248,9 +3371,9 @@
                 if (!this.isLoaded) {
                     throw new Error("Cannot eject this window, because it is not loaded yet");
                 }
-                const itemId = getData$1(this).id;
-                const newWindowId = yield getData$1(this).controller.ejectWindow(itemId);
-                getData$1(this).config.windowId = newWindowId;
+                const itemId = getData$2(this).id;
+                const newWindowId = yield getData$2(this).controller.ejectWindow(itemId);
+                getData$2(this).config.windowId = newWindowId;
                 yield this.workspace.refreshReference();
                 return this.getGdWindow();
             });
@@ -3259,8 +3382,8 @@
             if (!this.isLoaded) {
                 throw new Error("Cannot fetch this GD window, because the window is not yet loaded");
             }
-            const myId = getData$1(this).config.windowId;
-            const controller = getData$1(this).controller;
+            const myId = getData$2(this).config.windowId;
+            const controller = getData$2(this).controller;
             return controller.getGDWindow(myId);
         }
         moveTo(parent) {
@@ -3268,8 +3391,8 @@
                 if (!(parent instanceof Row || parent instanceof Column || parent instanceof Group)) {
                     throw new Error("Cannot add to the provided parent, because the provided parent is not an instance of Row, Column or Group");
                 }
-                const myId = getData$1(this).id;
-                const controller = getData$1(this).controller;
+                const myId = getData$2(this).id;
+                const controller = getData$2(this).controller;
                 const foundParent = yield controller.getParent((p) => p.id === parent.id);
                 if (!foundParent) {
                     throw new Error("Cannot move the window to the selected parent, because this parent does not exist.");
@@ -3293,8 +3416,8 @@
                     lockConfigResult = config;
                 }
                 const verifiedConfig = lockConfigResult === undefined ? undefined : windowLockConfigDecoder.runWithException(lockConfigResult);
-                const windowPlacementId = getData$1(this).id;
-                yield getData$1(this).controller.lockWindow(windowPlacementId, verifiedConfig);
+                const windowPlacementId = getData$2(this).id;
+                yield getData$2(this).controller.lockWindow(windowPlacementId, verifiedConfig);
                 yield this.workspace.refreshReference();
             });
         }
@@ -3304,8 +3427,8 @@
                 if (!verifiedConfig.width && !verifiedConfig.height) {
                     throw new Error("Expected either width or height to be passed.");
                 }
-                const myId = getData$1(this).id;
-                const controller = getData$1(this).controller;
+                const myId = getData$2(this).id;
+                const controller = getData$2(this).controller;
                 yield controller.resizeItem(myId, {
                     height: verifiedConfig.height,
                     width: verifiedConfig.width,
@@ -3317,7 +3440,7 @@
         onRemoved(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const id = getData$1(this).id;
+                const id = getData$2(this).id;
                 const wrappedCallback = () => __awaiter(this, void 0, void 0, function* () {
                     yield this.workspace.refreshReference();
                     callback();
@@ -3328,14 +3451,14 @@
                     eventType: "window",
                     scope: "window"
                 };
-                const unsubscribe = yield getData$1(this).controller.processLocalSubscription(config, id);
+                const unsubscribe = yield getData$2(this).controller.processLocalSubscription(config, id);
                 return unsubscribe;
             });
         }
         onLockConfigurationChanged(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const id = getData$1(this).id;
+                const id = getData$2(this).id;
                 const wrappedCallback = () => __awaiter(this, void 0, void 0, function* () {
                     yield this.workspace.refreshReference();
                     callback({
@@ -3350,111 +3473,115 @@
                     eventType: "window",
                     scope: "window"
                 };
-                const unsubscribe = yield getData$1(this).controller.processLocalSubscription(config, id);
+                const unsubscribe = yield getData$2(this).controller.processLocalSubscription(config, id);
                 return unsubscribe;
             });
         }
     }
 
-    const data$2 = new WeakMap();
-    const getData$2 = (model) => {
-        return data$2.get(model).manager.getFrameData(model);
+    const data$1 = new WeakMap();
+    const getData$1 = (model) => {
+        return data$1.get(model).manager.getFrameData(model);
     };
     class Frame {
         constructor(dataManager) {
-            data$2.set(this, { manager: dataManager });
+            data$1.set(this, { manager: dataManager });
         }
         registerShortcut(shortcut, callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 nonEmptyStringDecoder.runWithException(shortcut);
                 checkThrowCallback(callback);
-                const myId = getData$2(this).summary.id;
-                const unsubscribe = yield getData$2(this).controller.registerShortcut(shortcut, myId, callback);
+                const myId = getData$1(this).summary.id;
+                const unsubscribe = yield getData$1(this).controller.registerShortcut(shortcut, myId, callback);
                 return unsubscribe;
             });
         }
         get id() {
-            return getData$2(this).summary.id;
+            return getData$1(this).summary.id;
         }
         get isInitialized() {
-            return getData$2(this).summary.isInitialized;
+            return getData$1(this).summary.isInitialized;
         }
         getBounds() {
-            const myId = getData$2(this).summary.id;
-            return getData$2(this).controller.getFrameBounds(myId);
+            const myId = getData$1(this).summary.id;
+            return getData$1(this).controller.getFrameBounds(myId);
         }
         resize(config) {
             return __awaiter(this, void 0, void 0, function* () {
                 const validatedConfig = resizeConfigDecoder.runWithException(config);
-                const myId = getData$2(this).summary.id;
-                return getData$2(this).controller.resizeItem(myId, validatedConfig);
+                const myId = getData$1(this).summary.id;
+                return getData$1(this).controller.resizeItem(myId, validatedConfig);
             });
         }
         move(config) {
             return __awaiter(this, void 0, void 0, function* () {
                 const validatedConfig = moveConfigDecoder.runWithException(config);
-                const myId = getData$2(this).summary.id;
-                return getData$2(this).controller.moveFrame(myId, validatedConfig);
+                const myId = getData$1(this).summary.id;
+                return getData$1(this).controller.moveFrame(myId, validatedConfig);
             });
         }
         focus() {
-            const myId = getData$2(this).summary.id;
-            return getData$2(this).controller.focusItem(myId);
+            const myId = getData$1(this).summary.id;
+            return getData$1(this).controller.focusItem(myId);
         }
         state() {
             return __awaiter(this, void 0, void 0, function* () {
-                if (!window.glue42gd) {
-                    throw new Error("State operations are not supported in Glue42 Core");
+                const desktopGlobal = window.glue42gd || window.iodesktop;
+                if (!desktopGlobal) {
+                    throw new Error("State operations are not supported in IO Connect Browser");
                 }
-                const myId = getData$2(this).summary.id;
-                return getData$2(this).controller.getFrameState(myId);
+                const myId = getData$1(this).summary.id;
+                return getData$1(this).controller.getFrameState(myId);
             });
         }
         minimize() {
             return __awaiter(this, void 0, void 0, function* () {
-                if (!window.glue42gd) {
-                    throw new Error("State operations are not supported in Glue42 Core");
+                const desktopGlobal = window.glue42gd || window.iodesktop;
+                if (!desktopGlobal) {
+                    throw new Error("State operations are not supported in IO Connect Browser");
                 }
-                const myId = getData$2(this).summary.id;
-                return getData$2(this).controller.changeFrameState(myId, "minimized");
+                const myId = getData$1(this).summary.id;
+                return getData$1(this).controller.changeFrameState(myId, "minimized");
             });
         }
         maximize() {
             return __awaiter(this, void 0, void 0, function* () {
-                if (!window.glue42gd) {
-                    throw new Error("State operations are not supported in Glue42 Core");
+                const desktopGlobal = window.glue42gd || window.iodesktop;
+                if (!desktopGlobal) {
+                    throw new Error("State operations are not supported in IO Connect Browser");
                 }
-                const myId = getData$2(this).summary.id;
-                return getData$2(this).controller.changeFrameState(myId, "maximized");
+                const myId = getData$1(this).summary.id;
+                return getData$1(this).controller.changeFrameState(myId, "maximized");
             });
         }
         restore() {
             return __awaiter(this, void 0, void 0, function* () {
-                if (!window.glue42gd) {
-                    throw new Error("State operations are not supported in Glue42 Core");
+                const desktopGlobal = window.glue42gd || window.iodesktop;
+                if (!desktopGlobal) {
+                    throw new Error("State operations are not supported in IO Connect Browser");
                 }
-                const myId = getData$2(this).summary.id;
-                return getData$2(this).controller.changeFrameState(myId, "normal");
+                const myId = getData$1(this).summary.id;
+                return getData$1(this).controller.changeFrameState(myId, "normal");
             });
         }
         close() {
-            const myId = getData$2(this).summary.id;
-            return getData$2(this).controller.closeItem(myId);
+            const myId = getData$1(this).summary.id;
+            return getData$1(this).controller.closeItem(myId);
         }
         snapshot() {
-            const myId = getData$2(this).summary.id;
-            return getData$2(this).controller.getSnapshot(myId, "frame");
+            const myId = getData$1(this).summary.id;
+            return getData$1(this).controller.getSnapshot(myId, "frame");
         }
         workspaces() {
             return __awaiter(this, void 0, void 0, function* () {
-                const controller = getData$2(this).controller;
+                const controller = getData$1(this).controller;
                 return controller.getWorkspacesByFrameId(this.id);
             });
         }
         getConstraints() {
             return __awaiter(this, void 0, void 0, function* () {
-                const controller = getData$2(this).controller;
-                const myId = getData$2(this).summary.id;
+                const controller = getData$1(this).controller;
+                const myId = getData$1(this).summary.id;
                 return controller.getFrameConstraints(myId);
             });
         }
@@ -3462,27 +3589,27 @@
             return __awaiter(this, void 0, void 0, function* () {
                 nonEmptyStringDecoder.runWithException(name);
                 const validatedOptions = restoreWorkspaceConfigDecoder.runWithException(options);
-                return getData$2(this).controller.restoreWorkspace(name, validatedOptions);
+                return getData$1(this).controller.restoreWorkspace(name, validatedOptions);
             });
         }
         createWorkspace(definition, config) {
             const validatedDefinition = workspaceDefinitionDecoder.runWithException(definition);
             const validatedConfig = workspaceBuilderCreateConfigDecoder.runWithException(config);
-            return getData$2(this).controller.createWorkspace(validatedDefinition, validatedConfig);
+            return getData$1(this).controller.createWorkspace(validatedDefinition, validatedConfig);
         }
         init(config) {
             return __awaiter(this, void 0, void 0, function* () {
                 frameInitConfigDecoder.runWithException(config);
-                if (getData$2(this).summary.isInitialized) {
+                if (getData$1(this).summary.isInitialized) {
                     throw new Error("The frame has already been initialized");
                 }
-                return getData$2(this).controller.initFrame(this.id, config);
+                return getData$1(this).controller.initFrame(this.id, config);
             });
         }
         onClosed(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const myId = getData$2(this).summary.id;
+                const myId = getData$1(this).summary.id;
                 const wrappedCallback = (payload) => {
                     callback({ frameId: payload.frameSummary.id, frameBounds: payload.frameBounds });
                 };
@@ -3492,14 +3619,14 @@
                     eventType: "frame",
                     scope: "frame"
                 };
-                const unsubscribe = yield getData$2(this).controller.processLocalSubscription(config, myId);
+                const unsubscribe = yield getData$1(this).controller.processLocalSubscription(config, myId);
                 return unsubscribe;
             });
         }
         onMaximized(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const myId = getData$2(this).summary.id;
+                const myId = getData$1(this).summary.id;
                 const wrappedCallback = () => {
                     callback();
                 };
@@ -3509,14 +3636,14 @@
                     eventType: "frame",
                     scope: "frame"
                 };
-                const unsubscribe = yield getData$2(this).controller.processLocalSubscription(config, myId);
+                const unsubscribe = yield getData$1(this).controller.processLocalSubscription(config, myId);
                 return unsubscribe;
             });
         }
         onMinimized(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const myId = getData$2(this).summary.id;
+                const myId = getData$1(this).summary.id;
                 const wrappedCallback = () => {
                     callback();
                 };
@@ -3526,14 +3653,14 @@
                     eventType: "frame",
                     scope: "frame"
                 };
-                const unsubscribe = yield getData$2(this).controller.processLocalSubscription(config, myId);
+                const unsubscribe = yield getData$1(this).controller.processLocalSubscription(config, myId);
                 return unsubscribe;
             });
         }
         onNormal(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const myId = getData$2(this).summary.id;
+                const myId = getData$1(this).summary.id;
                 const wrappedCallback = () => {
                     callback();
                 };
@@ -3543,16 +3670,16 @@
                     eventType: "frame",
                     scope: "frame"
                 };
-                const unsubscribe = yield getData$2(this).controller.processLocalSubscription(config, myId);
+                const unsubscribe = yield getData$1(this).controller.processLocalSubscription(config, myId);
                 return unsubscribe;
             });
         }
         onWorkspaceOpened(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const myId = getData$2(this).summary.id;
+                const myId = getData$1(this).summary.id;
                 const wrappedCallback = (payload) => __awaiter(this, void 0, void 0, function* () {
-                    const workspace = yield getData$2(this).controller.transformStreamPayloadToWorkspace(payload);
+                    const workspace = yield getData$1(this).controller.transformStreamPayloadToWorkspace(payload);
                     callback(workspace);
                 });
                 const config = {
@@ -3561,16 +3688,16 @@
                     eventType: "workspace",
                     scope: "frame"
                 };
-                const unsubscribe = yield getData$2(this).controller.processLocalSubscription(config, myId);
+                const unsubscribe = yield getData$1(this).controller.processLocalSubscription(config, myId);
                 return unsubscribe;
             });
         }
         onWorkspaceSelected(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const myId = getData$2(this).summary.id;
+                const myId = getData$1(this).summary.id;
                 const wrappedCallback = (payload) => __awaiter(this, void 0, void 0, function* () {
-                    const workspace = yield getData$2(this).controller.getWorkspaceById(payload.workspaceSummary.id);
+                    const workspace = yield getData$1(this).controller.getWorkspaceById(payload.workspaceSummary.id);
                     callback(workspace);
                 });
                 const config = {
@@ -3579,14 +3706,14 @@
                     eventType: "workspace",
                     scope: "frame"
                 };
-                const unsubscribe = yield getData$2(this).controller.processLocalSubscription(config, myId);
+                const unsubscribe = yield getData$1(this).controller.processLocalSubscription(config, myId);
                 return unsubscribe;
             });
         }
         onWorkspaceClosed(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const myId = getData$2(this).summary.id;
+                const myId = getData$1(this).summary.id;
                 const wrappedCallback = (payload) => {
                     callback({ frameId: payload.frameSummary.id, workspaceId: payload.workspaceSummary.id, frameBounds: payload.frameBounds });
                 };
@@ -3596,16 +3723,16 @@
                     eventType: "workspace",
                     scope: "frame"
                 };
-                const unsubscribe = yield getData$2(this).controller.processLocalSubscription(config, myId);
+                const unsubscribe = yield getData$1(this).controller.processLocalSubscription(config, myId);
                 return unsubscribe;
             });
         }
         onWindowAdded(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const myId = getData$2(this).summary.id;
+                const myId = getData$1(this).summary.id;
                 const wrappedCallback = (payload) => __awaiter(this, void 0, void 0, function* () {
-                    const foundParent = yield getData$2(this).controller.getParent((parent) => parent.id === payload.windowSummary.parentId);
+                    const foundParent = yield getData$1(this).controller.getParent((parent) => parent.id === payload.windowSummary.parentId);
                     const foundWindow = foundParent.children.find((child) => child.type === "window" && child.positionIndex === payload.windowSummary.config.positionIndex);
                     callback(foundWindow);
                 });
@@ -3615,14 +3742,14 @@
                     eventType: "window",
                     scope: "frame"
                 };
-                const unsubscribe = yield getData$2(this).controller.processLocalSubscription(config, myId);
+                const unsubscribe = yield getData$1(this).controller.processLocalSubscription(config, myId);
                 return unsubscribe;
             });
         }
         onWindowRemoved(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const myId = getData$2(this).summary.id;
+                const myId = getData$1(this).summary.id;
                 const wrappedCallback = (payload) => {
                     const { windowId, workspaceId, frameId } = payload.windowSummary.config;
                     callback({ windowId, workspaceId, frameId });
@@ -3633,16 +3760,16 @@
                     eventType: "window",
                     scope: "frame"
                 };
-                const unsubscribe = yield getData$2(this).controller.processLocalSubscription(config, myId);
+                const unsubscribe = yield getData$1(this).controller.processLocalSubscription(config, myId);
                 return unsubscribe;
             });
         }
         onWindowLoaded(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const myId = getData$2(this).summary.id;
+                const myId = getData$1(this).summary.id;
                 const wrappedCallback = (payload) => __awaiter(this, void 0, void 0, function* () {
-                    const foundParent = yield getData$2(this).controller.getParent((parent) => {
+                    const foundParent = yield getData$1(this).controller.getParent((parent) => {
                         return parent.id === payload.windowSummary.parentId;
                     });
                     const foundWindow = foundParent.children.find((child) => child.type === "window" && child.positionIndex === payload.windowSummary.config.positionIndex);
@@ -3654,7 +3781,7 @@
                     eventType: "window",
                     scope: "frame"
                 };
-                const unsubscribe = yield getData$2(this).controller.processLocalSubscription(config, myId);
+                const unsubscribe = yield getData$1(this).controller.processLocalSubscription(config, myId);
                 return unsubscribe;
             });
         }
@@ -3662,14 +3789,15 @@
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
                 if (!this.isInitialized) {
-                    yield callback(getData$2(this).summary.initializationContext);
+                    callback(getData$1(this).summary.initializationContext);
                 }
+                return () => { };
             });
         }
         onFocusChanged(callback) {
             return __awaiter(this, void 0, void 0, function* () {
                 checkThrowCallback(callback);
-                const myData = getData$2(this);
+                const myData = getData$1(this);
                 const { id } = myData.summary;
                 const wrappedCallback = (args) => {
                     callback({ isFocused: args.frameSummary.isFocused });
@@ -3692,15 +3820,9 @@
             this.workspacesData = new WeakMap();
             this.windowsData = new WeakMap();
             this.framesData = new WeakMap();
-            this.windowPlacementIdData = {};
         }
         deleteData(model) {
             if (model instanceof Window) {
-                const keyForDeleting = Object.keys(this.windowPlacementIdData)
-                    .find((k) => this.windowPlacementIdData[k] === model);
-                if (keyForDeleting) {
-                    delete this.windowPlacementIdData[keyForDeleting];
-                }
                 this.windowsData.delete(model);
             }
             if (model instanceof Workspace) {
@@ -3714,7 +3836,6 @@
             }
         }
         setWindowData(model, data) {
-            this.windowPlacementIdData[data.id] = model;
             this.windowsData.set(model, data);
         }
         setWorkspaceData(model, data) {
@@ -3728,9 +3849,6 @@
         }
         getWindowData(model) {
             return this.windowsData.get(model);
-        }
-        getWindowByPlacementId(placementId) {
-            return this.windowPlacementIdData[placementId];
         }
         getWorkspaceData(model) {
             return this.workspacesData.get(model);
@@ -3766,38 +3884,34 @@
         }
     }
 
-    const data$3 = new WeakMap();
-    const getData$3 = (base, model) => {
-        const manager = data$3.get(base).manager;
+    const data = new WeakMap();
+    const getData = (base, model) => {
+        const manager = data.get(base).manager;
         if (model instanceof Workspace) {
             return manager.getWorkspaceData(model);
         }
-        return data$3.get(base).manager.getParentData(model);
-    };
-    const getWindowFromPlacementId = (base, placemenId) => {
-        const manager = data$3.get(base).manager;
-        return manager.getWindowByPlacementId(placemenId);
+        return data.get(base).manager.getParentData(model);
     };
     class Base {
         constructor(dataManager) {
-            data$3.set(this, { manager: dataManager });
+            data.set(this, { manager: dataManager });
         }
         getId(model) {
-            return getData$3(this, model).id;
+            return getData(this, model).id;
         }
         getPositionIndex(model) {
-            return getData$3(this, model).config.positionIndex;
+            return getData(this, model).config.positionIndex;
         }
         getWorkspaceId(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             return privateData.config.workspaceId || privateData.workspace.id;
         }
         getFrameId(model) {
-            return getData$3(this, model).frame.id;
+            return getData(this, model).frame.id;
         }
         getAllChildren(model, predicate) {
             checkThrowCallback(predicate, true);
-            const children = getData$3(this, model).children;
+            const children = getData(this, model).children;
             if (typeof predicate === "undefined") {
                 return children;
             }
@@ -3807,16 +3921,16 @@
             if (model instanceof Workspace) {
                 return model;
             }
-            return getData$3(this, model).parent;
+            return getData(this, model).parent;
         }
         getMyFrame(model) {
-            return getData$3(this, model).frame;
+            return getData(this, model).frame;
         }
         getMyWorkspace(model) {
             if (model instanceof Workspace) {
                 return model;
             }
-            return getData$3(this, model).workspace;
+            return getData(this, model).workspace;
         }
         addWindow(model, definition, parentType) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -3824,21 +3938,22 @@
                     throw new Error("The window definition should contain either an appName or a windowId");
                 }
                 const validatedDefinition = swimlaneWindowDefinitionDecoder.runWithException(definition);
-                const controller = getData$3(this, model).controller;
-                const operationResult = yield controller.add("window", getData$3(this, model).id, parentType, validatedDefinition);
+                const controller = getData(this, model).controller;
+                const operationResult = yield controller.add("window", getData(this, model).id, parentType, validatedDefinition);
                 if (model instanceof Workspace) {
                     yield model.refreshReference();
-                    return getWindowFromPlacementId(this, operationResult.itemId);
+                    return model.getWindow(w => w.elementId === operationResult.itemId);
                 }
-                yield this.getMyWorkspace(model).refreshReference();
-                return getWindowFromPlacementId(this, operationResult.itemId);
+                const myWorkspace = this.getMyWorkspace(model);
+                yield myWorkspace.refreshReference();
+                return myWorkspace.getWindow(w => w.elementId === operationResult.itemId);
             });
         }
         addParent(model, typeToAdd, parentType, definition) {
             return __awaiter(this, void 0, void 0, function* () {
                 const parentDefinition = this.transformDefinition(typeToAdd, definition);
-                const controller = getData$3(this, model).controller;
-                const newParentId = (yield controller.add("container", getData$3(this, model).id, parentType, parentDefinition)).itemId;
+                const controller = getData(this, model).controller;
+                const newParentId = (yield controller.add("container", getData(this, model).id, parentType, parentDefinition)).itemId;
                 if (model instanceof Workspace) {
                     yield model.refreshReference();
                     return model.getBox((parent) => parent.id === newParentId);
@@ -3865,153 +3980,153 @@
         }
         maximize(model) {
             return __awaiter(this, void 0, void 0, function* () {
-                const { controller, id } = getData$3(this, model);
+                const { controller, id } = getData(this, model);
                 yield controller.maximizeItem(id);
                 yield this.getMyWorkspace(model.parent).refreshReference();
             });
         }
         restore(model) {
             return __awaiter(this, void 0, void 0, function* () {
-                const { controller, id } = getData$3(this, model);
+                const { controller, id } = getData(this, model);
                 yield controller.restoreItem(id);
                 yield this.getMyWorkspace(model.parent).refreshReference();
             });
         }
         close(model) {
             return __awaiter(this, void 0, void 0, function* () {
-                const modelData = getData$3(this, model);
-                const controller = getData$3(this, model).controller;
+                const modelData = getData(this, model);
+                const controller = getData(this, model).controller;
                 yield controller.closeItem(modelData.id);
                 yield this.getMyWorkspace(modelData.parent).refreshReference();
             });
         }
         lockContainer(model, config) {
             return __awaiter(this, void 0, void 0, function* () {
-                const modelData = getData$3(this, model);
-                const controller = getData$3(this, model).controller;
+                const modelData = getData(this, model);
+                const controller = getData(this, model).controller;
                 yield controller.lockContainer(modelData.id, model.type, config);
                 yield this.getMyWorkspace(modelData.parent).refreshReference();
             });
         }
         getAllowDrop(model) {
-            return getData$3(this, model).config.allowDrop;
+            return getData(this, model).config.allowDrop;
         }
         getAllowDropLeft(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             if (privateData.type !== "group") {
                 throw new Error(`Property allowDropLeft is available only for groups and not on ${model.type} ${model.id}`);
             }
             return privateData.config.allowDropLeft;
         }
         getAllowDropRight(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             if (privateData.type !== "group") {
                 throw new Error(`Property allowDropRight is available only for groups and not on ${model.type} ${model.id}`);
             }
             return privateData.config.allowDropRight;
         }
         getAllowDropTop(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             if (privateData.type !== "group") {
                 throw new Error(`Property allowDropTop is available only for groups and not on ${model.type} ${model.id}`);
             }
             return privateData.config.allowDropTop;
         }
         getAllowDropBottom(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             if (privateData.type !== "group") {
                 throw new Error(`Property allowDropBottom is available only for groups and not on ${model.type} ${model.id}`);
             }
             return privateData.config.allowDropBottom;
         }
         getAllowDropHeader(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             if (privateData.type !== "group") {
                 throw new Error(`Property allowDropHeader is available only for groups and not on ${model.type} ${model.id}`);
             }
             return privateData.config.allowDropHeader;
         }
         getAllowSplitters(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             if (privateData.type === "group") {
                 throw new Error(`Cannot get allow splitters from private data ${privateData.type}`);
             }
             return privateData.config.allowSplitters;
         }
         getAllowExtract(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             if (privateData.type !== "group") {
                 throw new Error(`Cannot get allow extract from private data ${privateData.type} with config ${privateData.type !== "workspace" ? privateData.config.type : ""}`);
             }
             return privateData.config.allowExtract;
         }
         getAllowReorder(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             if (privateData.type !== "group") {
                 throw new Error(`Cannot get allow extract from private data ${privateData.type} with config ${privateData.type !== "workspace" ? privateData.config.type : ""}`);
             }
             return privateData.config.allowReorder;
         }
         getShowMaximizeButton(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             if (privateData.type !== "group") {
                 throw new Error(`Cannot get show maximize button from private data${privateData.type} with config ${privateData.type !== "workspace" ? privateData.config.type : ""}`);
             }
             return privateData.config.showMaximizeButton;
         }
         getShowEjectButton(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             if (privateData.type !== "group") {
                 throw new Error(`Cannot get show eject button from private data${privateData.type} with config ${privateData.type !== "workspace" ? privateData.config.type : ""}`);
             }
             return privateData.config.showEjectButton;
         }
         getShowAddWindowButton(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             if (privateData.type !== "group") {
                 throw new Error(`Cannot get add window button from private data${privateData.type} with config ${privateData.type !== "workspace" ? privateData.config.type : ""}`);
             }
             return privateData.config.showAddWindowButton;
         }
         getMinWidth(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             return privateData.config.minWidth;
         }
         getMaxWidth(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             return privateData.config.maxWidth;
         }
         getMinHeight(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             return privateData.config.minHeight;
         }
         getMaxHeight(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             return privateData.config.maxHeight;
         }
         getWidthInPx(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             return privateData.config.widthInPx;
         }
         getHeightInPx(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             return privateData.config.heightInPx;
         }
         getIsPinned(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             return privateData.config.isPinned;
         }
         getIsMaximized(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             return privateData.config.isMaximized;
         }
         getMaximizationBoundary(model) {
-            const privateData = getData$3(this, model);
+            const privateData = getData(this, model);
             return privateData.config.maximizationBoundary;
         }
         setHeight(model, height) {
             return __awaiter(this, void 0, void 0, function* () {
-                const modelData = getData$3(this, model);
+                const modelData = getData(this, model);
                 const { controller, id } = modelData;
                 yield controller.resizeItem(id, {
                     height
@@ -4021,7 +4136,7 @@
         }
         setWidth(model, width) {
             return __awaiter(this, void 0, void 0, function* () {
-                const modelData = getData$3(this, model);
+                const modelData = getData(this, model);
                 const { controller, id } = modelData;
                 yield controller.resizeItem(id, {
                     width
@@ -4031,7 +4146,7 @@
         }
         setSize(model, width, height) {
             return __awaiter(this, void 0, void 0, function* () {
-                const modelData = getData$3(this, model);
+                const modelData = getData(this, model);
                 const { controller, id } = modelData;
                 yield controller.resizeItem(id, {
                     width,
@@ -4042,15 +4157,22 @@
         }
         setMaximizationBoundary(model, config) {
             return __awaiter(this, void 0, void 0, function* () {
-                const modelData = getData$3(this, model);
+                const modelData = getData(this, model);
                 const { controller, id } = modelData;
                 yield controller.setMaximizationBoundary(id, config);
                 yield this.getMyWorkspace(modelData.parent).refreshReference();
             });
         }
+        bundleTo(model, type) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const modelData = getData(this, model);
+                const { controller, id } = modelData;
+                yield controller.bundleItemTo(type, id);
+            });
+        }
         processLocalSubscription(model, subscriptionConfig) {
             return __awaiter(this, void 0, void 0, function* () {
-                return getData$3(this, model).controller.processLocalSubscription(subscriptionConfig, this.getId(model));
+                return getData(this, model).controller.processLocalSubscription(subscriptionConfig, this.getId(model));
             });
         }
         transformDefinition(type, definition) {
@@ -4086,7 +4208,7 @@
             return this.ioc.privateDataManager;
         }
         checkIsWindowLoaded(windowId) {
-            return windowId && this.windows.list().some((win) => win.id === windowId);
+            return (!!windowId) && this.windows.list().some((win) => win.id === windowId);
         }
         createWorkspace(createConfig) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -4222,9 +4344,18 @@
                 return this.ioc.getModel("workspace", workspaceConfig);
             });
         }
-        bundleTo(type, workspaceId) {
+        bundleWorkspaceTo(type, workspaceId) {
             return __awaiter(this, void 0, void 0, function* () {
                 yield this.bridge.send(OPERATIONS.bundleWorkspace.name, { type, workspaceId });
+            });
+        }
+        bundleItemTo(type, itemId) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const isSupported = yield this.isOperationSupported(OPERATIONS.bundleItem.name);
+                if (!isSupported) {
+                    throw new Error(`Operation ${OPERATIONS.bundleItem.name} is not supported. Ensure that you are running the latest version of all packages`);
+                }
+                yield this.bridge.send(OPERATIONS.bundleItem.name, { type, itemId });
             });
         }
         getWorkspaceContext(workspaceId) {
@@ -4469,6 +4600,26 @@
         setWorkspaceIcon(workspaceId, icon) {
             return this.bridge.send(OPERATIONS.setWorkspaceIcon.name, { workspaceId, icon });
         }
+        getPlatformFrameId() {
+            return __awaiter(this, void 0, void 0, function* () {
+                try {
+                    const result = yield this.bridge.send(OPERATIONS.getPlatformFrameId.name, {});
+                    return result;
+                }
+                catch (error) {
+                    return {};
+                }
+            });
+        }
+        isOperationSupported(operation) {
+            return __awaiter(this, void 0, void 0, function* () {
+                const desktopGlobal = window.glue42gd || window.iodesktop;
+                if (desktopGlobal) {
+                    return { isSupported: true };
+                }
+                return yield this.bridge.send(OPERATIONS.operationCheck.name, { operation });
+            });
+        }
     }
 
     class MainController {
@@ -4525,12 +4676,14 @@
             });
         }
         processLocalSubscription(config, levelId) {
-            return window.glue42gd ?
+            const desktopGlobal = window.glue42gd || window.iodesktop;
+            return desktopGlobal ?
                 this.handleEnterpriseLocalSubscription(config, levelId) :
                 this.handleCoreLocalSubscription(config, levelId);
         }
         processGlobalSubscription(callback, eventType, action) {
-            return window.glue42gd ?
+            const desktopGlobal = window.glue42gd || window.iodesktop;
+            return desktopGlobal ?
                 this.handleEnterpriseGlobalSubscription(callback, eventType, action) :
                 this.handleCoreGlobalSubscription(callback, eventType, action);
         }
@@ -4556,7 +4709,8 @@
         }
         getWorkspaceByWindowId(itemId) {
             return __awaiter(this, void 0, void 0, function* () {
-                if (!window.glue42gd) {
+                const desktopGlobal = window.glue42gd || window.iodesktop;
+                if (!desktopGlobal) {
                     return (yield this.getWorkspaces((wsp) => !!wsp.getWindow((w) => w.id === itemId)))[0];
                 }
                 return this.base.fetchWorkspace(itemId);
@@ -4659,6 +4813,16 @@
         }
         importLayouts(layouts, mode) {
             return __awaiter(this, void 0, void 0, function* () {
+                const desktopGlobal = window.glue42gd || window.iodesktop;
+                if (desktopGlobal) {
+                    try {
+                        yield this.bridge.send(OPERATIONS.importLayouts.name, { layouts, mode });
+                    }
+                    catch (error) {
+                        yield Promise.all(layouts.map((layout) => this.bridge.send(OPERATIONS.importLayout.name, { layout, mode })));
+                    }
+                    return;
+                }
                 yield this.base.importLayouts(layouts, mode);
             });
         }
@@ -4668,9 +4832,14 @@
         handleOnRemoved(callback) {
             return this.base.handleOnRemoved(callback);
         }
-        bundleTo(type, workspaceId) {
+        bundleWorkspaceTo(type, workspaceId) {
             return __awaiter(this, void 0, void 0, function* () {
-                return yield this.base.bundleTo(type, workspaceId);
+                return yield this.base.bundleWorkspaceTo(type, workspaceId);
+            });
+        }
+        bundleItemTo(type, id) {
+            return __awaiter(this, void 0, void 0, function* () {
+                return yield this.base.bundleItemTo(type, id);
             });
         }
         getWorkspaceContext(workspaceId) {
@@ -4837,6 +5006,9 @@
         }
         registerShortcut(shortcut, frameId, callback) {
             return this.shortcutsController.registerShortcut(shortcut, frameId, callback);
+        }
+        getPlatformFrameId() {
+            return this.base.getPlatformFrameId();
         }
         handleCoreLocalSubscription(config, levelId) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -5095,7 +5267,7 @@
         }
     }
 
-    var version = "1.17.2";
+    var version = "3.2.0";
 
     const composeAPI = (glue, ioc) => {
         const controller = ioc.controller;
@@ -5246,6 +5418,24 @@
             const unsubscribe = yield controller.processGlobalSubscription(wrappedCallback, "workspace", "closed");
             return unsubscribe;
         });
+        const onWorkspaceHibernated = (callback) => __awaiter(void 0, void 0, void 0, function* () {
+            checkThrowCallback(callback);
+            const wrappedCallback = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+                const workspace = yield controller.transformStreamPayloadToWorkspace(payload);
+                callback(workspace);
+            });
+            const unsubscribe = yield controller.processGlobalSubscription(wrappedCallback, "workspace", "hibernated");
+            return unsubscribe;
+        });
+        const onWorkspaceResumed = (callback) => __awaiter(void 0, void 0, void 0, function* () {
+            checkThrowCallback(callback);
+            const wrappedCallback = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+                const workspace = yield controller.transformStreamPayloadToWorkspace(payload);
+                callback(workspace);
+            });
+            const unsubscribe = yield controller.processGlobalSubscription(wrappedCallback, "workspace", "resumed");
+            return unsubscribe;
+        });
         const onWindowAdded = (callback) => __awaiter(void 0, void 0, void 0, function* () {
             checkThrowCallback(callback);
             const wrappedCallback = (payload) => __awaiter(void 0, void 0, void 0, function* () {
@@ -5322,6 +5512,23 @@
             const unsubscribe = yield controller.processGlobalSubscription(wrappedCallback, "window", "restored");
             return unsubscribe;
         });
+        const onWindowSelected = (callback) => __awaiter(void 0, void 0, void 0, function* () {
+            checkThrowCallback(callback);
+            const wrappedCallback = (payload) => __awaiter(void 0, void 0, void 0, function* () {
+                const snapshot = (yield controller.getSnapshot(payload.windowSummary.config.workspaceId, "workspace"));
+                const frameConfig = {
+                    summary: snapshot.frameSummary
+                };
+                const frame = ioc.getModel("frame", frameConfig);
+                const workspaceConfig = { frame, snapshot };
+                const workspace = ioc.getModel("workspace", workspaceConfig);
+                const windowParent = workspace.getBox((parent) => parent.id === payload.windowSummary.parentId);
+                const foundWindow = windowParent.children.find((child) => child.type === "window" && child.elementId === payload.windowSummary.itemId);
+                callback(foundWindow);
+            });
+            const unsubscribe = yield controller.processGlobalSubscription(wrappedCallback, "window", "selected");
+            return unsubscribe;
+        });
         const waitForFrame = (id) => __awaiter(void 0, void 0, void 0, function* () {
             nonEmptyStringDecoder.runWithException(id);
             return new Promise((res, rej) => {
@@ -5366,26 +5573,29 @@
             onFrameClosed,
             onWorkspaceOpened,
             onWorkspaceClosed,
+            onWorkspaceHibernated,
+            onWorkspaceResumed,
             onWindowAdded,
             onWindowLoaded,
             onWindowRemoved,
             onWindowMaximized,
             onWindowRestored,
+            onWindowSelected,
             version
         };
     };
 
-    const factoryFunction = (glue) => __awaiter(void 0, void 0, void 0, function* () {
-        const ioc = new IoC(glue.agm, glue.windows, glue.layouts, glue.contexts);
-        const actualWindowId = glue.interop.instance.windowId;
+    const factoryFunction = (io) => __awaiter(void 0, void 0, void 0, function* () {
+        const ioc = new IoC(io.agm, io.windows, io.layouts, io.contexts);
+        const actualWindowId = io.interop.instance.windowId;
         yield ioc.initiate(actualWindowId);
-        glue.workspaces = composeAPI(glue, ioc);
+        io.workspaces = composeAPI(io, ioc);
     });
     if (typeof window !== "undefined") {
-        window.GlueWorkspaces = factoryFunction;
+        window.IOWorkspaces = factoryFunction;
     }
 
     return factoryFunction;
 
-})));
+}));
 //# sourceMappingURL=workspaces.umd.js.map

@@ -5,6 +5,6 @@ const fetchAppDefinitions = async (url) => {
     return appDefinitions;
 };
 
-const setupApplications = async (glue, { url }) => {
+const setupApplications = async (io, { url }) => {
     // TODO Chapter 8.2
 };
