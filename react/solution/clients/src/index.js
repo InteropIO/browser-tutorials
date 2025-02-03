@@ -233,7 +233,7 @@ const settings  = {
 };
 
 ReactDOM.render(
-    <IOConnectProvider fallback={<h2>Loading...</h2>} settings={settings}>
+    <IOConnectProvider settings={settings}>
         <Clients />
     </IOConnectProvider>,
     document.getElementById("root")

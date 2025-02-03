@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";
-import {IOConnectProvider} from "@interopio/react-hooks";
+import { IOConnectProvider } from "@interopio/react-hooks";
 import './index.css';
 import IOBrowser from "@interopio/browser";
 import PortfolioDownloader from './PortfolioDownloader';

@@ -6,7 +6,7 @@ import "./App.css";
 import StockDetails from "./StockDetails";
 import * as serviceWorker from "./serviceWorker";
 import IOBrowser from "@interopio/browser"
-import {IOConnectProvider} from "@interopio/react-hooks";
+import { IOConnectProvider } from "@interopio/react-hooks";
 
 const settings = {
     browser: {

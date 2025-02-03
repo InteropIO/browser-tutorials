@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import {useIOConnect, IOConnectContext} from "@interopio/react-hooks";
+import { useIOConnect, IOConnectContext } from "@interopio/react-hooks";
 import { setupIntentListener } from "./io";
 
 function PortfolioDownloader() {

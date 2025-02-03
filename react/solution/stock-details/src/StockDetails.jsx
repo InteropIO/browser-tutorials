@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import {useIOConnect, IOConnectContext} from "@interopio/react-hooks"
+import { useIOConnect, IOConnectContext } from "@interopio/react-hooks"
 import { getMyWindowContext, subscribeForInstrumentStream } from "./io";
 
 function StockDetails() {
@@ -17,12 +17,12 @@ function StockDetails() {
             <div className="row">
                 <div className="col-md-2">
                     {!io && (
-                        <span id="ioSpan" className="badge badge-warning">
+                        <span id="ioConnectSpan" className="badge badge-warning">
                             io.Connect is unavailable
                         </span>
                     )}
                     {io && (
-                        <span id="ioSpan" className="badge badge-success">
+                        <span id="ioConnectSpan" className="badge badge-success">
                             io.Connect is available
                         </span>
                     )}
