@@ -5,11 +5,11 @@ const fetchWorkspaceLayoutDefinitions = async (url) => {
   return layoutDefinitions;
 };
 
-export const setupLayouts = async (glue, { url }) => {
+export const setupLayouts = async (io, { url }) => {
   try {
       const layoutDefinitions = await fetchWorkspaceLayoutDefinitions(url);
 
-      await glue.layouts.import(layoutDefinitions);
+      await io.layouts.import(layoutDefinitions);
   } catch (error) {
       console.error(error.message);
   };

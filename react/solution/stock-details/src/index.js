@@ -5,19 +5,19 @@ import "./index.css";
 import "./App.css";
 import StockDetails from "./StockDetails";
 import * as serviceWorker from "./serviceWorker";
-import GlueWeb from "@glue42/web";
-import { GlueProvider } from "@glue42/react-hooks";
+import IOBrowser from "@interopio/browser"
+import {IOConnectProvider} from "@interopio/react-hooks";
 
 const settings = {
-    web: {
-        factory: GlueWeb
+    browser: {
+        factory: IOBrowser
     }
 };
 
 ReactDOM.render(
-    <GlueProvider settings={settings}>
+    <IOConnectProvider settings={settings}>
         <StockDetails />
-    </GlueProvider>,
+    </IOConnectProvider>,
     document.getElementById("root")
 );
 

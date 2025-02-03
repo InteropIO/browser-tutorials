@@ -4,8 +4,8 @@
     "private": true,
     "homepage": "/client-details/",
     "dependencies": {
-        "@glue42/react-hooks": "^2.8.3",
-        "@glue42/workspaces-api": "^1.17.1",
+        "@interopio/react-hooks": "^3.5.2",
+        "@interopio/workspaces-api": "^3.5.2",
         "@testing-library/jest-dom": "^5.11.4",
         "@testing-library/react": "^11.1.0",
         "@testing-library/user-event": "^12.1.10",
@@ -17,7 +17,7 @@
         "web-vitals": "^1.0.1"
     },
     "scripts": {
-        "start": "react-scripts start",
+        "start": "cross-env PORT=3003 react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test",
         "eject": "react-scripts eject"
@@ -39,5 +39,8 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "devDependencies": {
+        "cross-env": "^7.0.3"
     }
 }
