@@ -214,9 +214,7 @@ const config = {
     browser: {
         libraries: [IOWorkspaces],
     },
-    // TODO: Chapter 1.2
-    // Enter a valid license key for io.Connect Browser.
-    licenseKey: "",
+    licenseKey: process.env.REACT_APP_LICENSE_KEY,
     // Specify the location of the Workspaces App.
     workspaces: { src: "http://localhost:9300/" },
     // layouts,
