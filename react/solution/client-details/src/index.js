@@ -1,24 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
-import GlueWeb from "@glue42/web";
-import { GlueProvider } from "@glue42/react-hooks";
+import IOBrowser from "@interopio/browser"
+import { IOConnectProvider } from "@interopio/react-hooks";
 import "bootstrap/dist/css/bootstrap.css";
 import ClientDetails from "./ClientDetails";
-import GlueWorkspaces from "@glue42/workspaces-api";
+import IOWorkspaces from "@interopio/workspaces-api";
 
-const config = { libraries: [GlueWorkspaces] };
+const config = { libraries: [IOWorkspaces] };
 
 const settings  = {
-    web: {
-        factory: GlueWeb,
+    browser: {
+        factory: IOBrowser,
         config
     }
 };
 
 ReactDOM.render(
-    <GlueProvider settings={settings}>
+    <IOConnectProvider settings={settings}>
         <ClientDetails />
-    </GlueProvider>,
+    </IOConnectProvider>,
     document.getElementById("root")
 );

@@ -1,4 +1,4 @@
-export const setupIntentListener = (setClientName) => (glue) => {
+export const setupIntentListener = (setClientName) => (io) => {
     const intentHandler = (context) => {
         if (context.type !== 'ClientPortfolio') {
             return;
@@ -9,7 +9,7 @@ export const setupIntentListener = (setClientName) => (glue) => {
         startPortfolioDownload(context.data.clientName, context.data.portfolio);
     };
 
-    glue.intents.register('ExportPortfolio', intentHandler);
+    io.intents.register('ExportPortfolio', intentHandler);
 };
 
 const startPortfolioDownload = (clientName, portfolio) => {

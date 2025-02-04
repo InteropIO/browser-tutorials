@@ -1,19 +1,19 @@
 import ReactDOM from "react-dom";
 import "bootstrap/dist/css/bootstrap.css";
-import { GlueProvider } from "@glue42/react-hooks";
+import { IOConnectProvider } from "@interopio/react-hooks";
 import './index.css';
-import GlueWeb from "@glue42/web";
+import IOBrowser from "@interopio/browser";
 import PortfolioDownloader from './PortfolioDownloader';
 
 const settings  = {
-  web: {
-      factory: GlueWeb,
+  browser: {
+      factory: IOBrowser,
   }
 };
 
 ReactDOM.render(
-  <GlueProvider settings={settings}>
+  <IOConnectProvider settings={settings}>
       <PortfolioDownloader />
-  </GlueProvider>,
+  </IOConnectProvider>,
   document.getElementById("root")
 );

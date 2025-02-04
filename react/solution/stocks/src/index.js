@@ -5,23 +5,23 @@ import "./index.css";
 import "./App.css";
 import Stocks from "./Stocks";
 import * as serviceWorker from "./serviceWorker";
-import GlueWeb from "@glue42/web";
-import { GlueProvider } from "@glue42/react-hooks";
-import GlueWorkspaces from "@glue42/workspaces-api";
+import IOBrowser from "@interopio/browser";
+import { IOConnectProvider } from "@interopio/react-hooks";
+import IOWorkspaces from "@interopio/workspaces-api"
 
-const config = { libraries: [GlueWorkspaces] };
+const config = { libraries: [IOWorkspaces] };
 
 const settings = {
-    web: {
-        factory: GlueWeb,
+    browser: {
+        factory: IOBrowser,
         config
     }
 };
 
 ReactDOM.render(
-    <GlueProvider settings={settings}>
+    <IOConnectProvider settings={settings}>
         <Stocks />
-    </GlueProvider>,
+    </IOConnectProvider>,
     document.getElementById("root")
 );
 

@@ -5,11 +5,11 @@ const fetchAppDefinitions = async (url) => {
   return appDefinitions;
 };
 
-export const setupApplications = async (glue, { url }) => {
+export const setupApplications = async (io, { url }) => {
   try {
       const appDefinitions = await fetchAppDefinitions(url);
 
-      await glue.appManager.inMemory.import(appDefinitions);
+      await io.appManager.inMemory.import(appDefinitions);
   } catch (error) {
       console.error(error.message);
   };

@@ -7,10 +7,9 @@ import Clients from "./Clients";
 import { setupApplications } from "./plugins/applicationsPlugin";
 import { setupLayouts } from "./plugins/layoutsPlugin";
 import * as serviceWorker from "./serviceWorker";
-import { GlueProvider } from "@glue42/react-hooks";
-import GlueWebPlatform from "@glue42/web-platform";
-import GlueWorkspaces from "@glue42/workspaces-api";
-
+import { IOConnectProvider } from "@interopio/react-hooks";
+import IOBrowserPlatform from "@interopio/browser-platform";
+import IOWorkspaces from '@interopio/workspaces-api';
 // // Defining Workspace layouts.
 // const layouts = {
 //     mode: "idb",
@@ -211,8 +210,11 @@ const plugins = {
 
 // Define the configuration object and pass it to the factory function.
 const config = {
-    // Pass the `GlueWorkspaces` factory function.
-    glue: { libraries: [GlueWorkspaces] },
+    // Pass the `IOWorkspaces` factory function.
+    browser: {
+        libraries: [IOWorkspaces],
+    },
+    licenseKey: process.env.REACT_APP_LICENSE_KEY,
     // Specify the location of the Workspaces App.
     workspaces: { src: "http://localhost:9300/" },
     // layouts,
@@ -222,16 +224,16 @@ const config = {
 };
 
 const settings  = {
-    webPlatform: {
-        factory: GlueWebPlatform,
-        config
-    }
+    browserPlatform: {
+        factory: IOBrowserPlatform,
+        config,
+    },
 };
 
 ReactDOM.render(
-    <GlueProvider settings={settings}>
+    <IOConnectProvider settings={settings}>
         <Clients />
-    </GlueProvider>,
+    </IOConnectProvider>,
     document.getElementById("root")
 );
 
