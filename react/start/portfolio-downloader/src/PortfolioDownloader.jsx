@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useGlue } from "@glue42/react-hooks";
-import { setupIntentListener } from "./glue";
+import { useIOConnect } from "@interopio/react-hooks";
+import { setupIntentListener } from "./io";
 
 function PortfolioDownloader() {
     const [clientName, setClientName] = useState("");
 
-    useGlue(setupIntentListener(setClientName));
+    useIOConnect(setupIntentListener(setClientName));
 
     return (
         <div className="container-fluid">
