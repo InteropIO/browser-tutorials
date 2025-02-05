@@ -5,7 +5,7 @@ const fetchWorkspaceLayoutDefinitions = async (url) => {
     return layoutDefinitions;
 };
 
-const setupLayouts = async (glue, { url }) => {
+const setupLayouts = async (io, { url }) => {
     // Call `fetchWorkspaceLayoutDefinitions()` and import the Layouts.
 
 };

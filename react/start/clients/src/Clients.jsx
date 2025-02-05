@@ -20,13 +20,13 @@ function Clients() {
         <div className="container-fluid">
             <div className="row">
                 {/* <div className="col-md-2">
-                    {!glue && (
-                        <span id="glueSpan" className="badge badge-warning">
+                    {!io && (
+                        <span id="ioConnectSpan" className="badge badge-warning">
                             io.Connect is unavailable
                         </span>
                     )}
-                    {glue && (
-                        <span id="glueSpan" className="badge badge-success">
+                    {io && (
+                        <span id="ioConnectSpan" className="badge badge-success">
                             io.Connect is available
                         </span>
                     )}
