@@ -9,8 +9,7 @@ export const setupIntentListener = (setClientName) => (io) => {
         startPortfolioDownload(context.data.clientName, context.data.portfolio);
     };
 
-    // Pass `intentHandler()` to the `register()` method.
-
+    io.intents.register("ExportPortfolio", intentHandler);
 };
 
 const startPortfolioDownload = (clientName, portfolio) => {

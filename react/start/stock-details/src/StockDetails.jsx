@@ -1,12 +1,44 @@
 import React from "react";
+import { IOConnectContext, useIOConnect } from "@interopio/react-hooks"
+import { useContext } from "react";
+import { useState } from "react";
+import { getMyWindowContext, subscribeForInstrumentStream, subscribeForSharedContext } from "./io";
 
 function StockDetails() {
-    const { RIC, BPOD, Bloomberg, Description, Exchange, Venues, Bid, Ask } = {};
+    const io = useContext(IOConnectContext);
 
+    const [windowContext, setWindowContext] = useState({});
+    const [{ clientId, clientName, portfolio }, setClient] = useState({});
+
+
+    useIOConnect(getMyWindowContext(setWindowContext));
+    useIOConnect(subscribeForSharedContext(setClient));
+
+    const {
+        stock: { RIC, BPOD, Bloomberg, Description, Exchange, Venues } = {}
+    } = windowContext || {};
+
+    const [{ Bid, Ask }, setPrices] = useState({ Bid: windowContext.Bid, Ask: windowContext.Ask});
+
+    useIOConnect(subscribeForInstrumentStream(setPrices), [RIC]);
+
+    console.log(windowContext);
     return (
         <div className="container-fluid">
             <div className="row">
-                {/* <div className="col-md-2">
+                {clientId && (
+                    <>
+                        <h2 className="p-3">
+                            Client {clientName} - {clientId}
+                        </h2>
+                        {RIC && portfolio.length && !portfolio.includes(RIC) && (
+                            <h4 className="p-3">
+                                The client doesn't have this stock in their portfolio.
+                            </h4>
+                        )}
+                    </>
+                )}
+                <div className="col-md-2">
                     {!io && (
                         <span id="ioConnectSpan" className="badge badge-warning">
                             io.Connect is unavailable
@@ -17,7 +49,7 @@ function StockDetails() {
                             io.Connect is available
                         </span>
                     )}
-                </div> */}
+                </div>
                 <div className="col-md-8">
                     <h1 className="text-center">Stock Details {RIC}</h1>
                 </div>
