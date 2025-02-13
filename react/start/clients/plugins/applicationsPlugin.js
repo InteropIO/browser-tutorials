@@ -5,7 +5,7 @@ const fetchAppDefinitions = async (url) => {
     return appDefinitions;
 };
 
-const setupApplications = async (glue, { url }) => {
+const setupApplications = async (io, { url }) => {
     // Call `fetchAppDefinitions()` and import the app definitions.
 
 };

@@ -1,4 +1,4 @@
-export const setupIntentListener = (setClientName) => (glue) => {
+export const setupIntentListener = (setClientName) => (io) => {
     const intentHandler = (context) => {
 
         if (context.type !== "ClientPortfolio") {
