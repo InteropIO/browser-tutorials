@@ -6,7 +6,7 @@ function PortfolioDownloader() {
     const [clientName, setClientName] = useState("");
 
     useIOConnect(setupIntentListener(setClientName));
-
+    
     return (
         <div className="container-fluid">
             <div className="row">

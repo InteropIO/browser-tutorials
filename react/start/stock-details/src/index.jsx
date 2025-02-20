@@ -1,24 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import IOBrowser from "@interopio/browser"
-import { IOConnectProvider } from "@interopio/react-hooks";
 import "bootstrap/dist/css/bootstrap.css";
-import ClientDetails from "./ClientDetails";
-import IOWorkspaces from "@interopio/workspaces-api";
+import "./index.css";
+import "./App.css";
+import StockDetails from "./StockDetails";
+import * as serviceWorker from "./serviceWorker";
+import IOBrowser from "@interopio/browser";
+import { IOConnectProvider } from "@interopio/react-hooks";
 
-const config = { libraries: [IOWorkspaces] };
-
-const settings  = {
+const settings = {
     browser: {
         factory: IOBrowser,
-        config
     }
-};
+}
 
 ReactDOM.render(
     <IOConnectProvider settings={settings}>
-        <ClientDetails />
+        <StockDetails />
     </IOConnectProvider>,
     document.getElementById("root")
-);
+)
+
+serviceWorker.register();

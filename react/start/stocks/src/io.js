@@ -58,9 +58,9 @@ export const publishInstrumentPrice = (stream) => {
     }, 1500);
 };
 
-export const openStockDetails = (io) => async (stock)=>{
+export const openStockDetails = (io) => async (stock) => {
     const detailsApplication = io.appManager.application("Stock Details");
-    
+
     const contexts = await Promise.all(
         detailsApplication.instances.map(instance => instance.getContext())
     );
@@ -81,13 +81,13 @@ export const createInstrumentStream = async (io) => {
 };
 
 export const subscribeForInstrumentStream = (handler) => async (io, stock) => {
-    if(stock){
+    if (stock) {
         const subscription = await io.interop.subscribe(SET_PRICES_STREAM);
 
-        const handleUpdates = ({data: stocks}) =>{
-            if(stocks[stock]){
+        const handleUpdates = ({ data: stocks }) => {
+            if (stocks[stock]) {
                 handler(stocks[stock])
-            }else if(Array.isArray(stock)){
+            } else if (Array.isArray(stock)) {
                 handler(stocks);
             }
         }
@@ -122,9 +122,9 @@ export const subscribeForSharedContext = (handler) => (io) => {
 export const getChannelNamesAndColors = async (io) => {
     const channelContexts = await io.channels.list();
 
-    const channelNamesAndColors = channelContexts.map((channelContext)=>{
+    const channelNamesAndColors = channelContexts.map((channelContext) => {
         const channelInfo = {
-            name: channelContext.name, 
+            name: channelContext.name,
             color: channelContext.meta.color
         };
 
@@ -204,7 +204,7 @@ export const raiseExportPortfolioIntentRequest = (io) => async (portfolio, clien
 
         await io.intents.raise(intentRequest);
 
-    } catch(error) {
+    } catch (error) {
         console.error(error.message);
     }
 };

@@ -22,7 +22,6 @@ function StockDetails() {
 
     useIOConnect(subscribeForInstrumentStream(setPrices), [RIC]);
 
-    console.log(windowContext);
     return (
         <div className="container-fluid">
             <div className="row">

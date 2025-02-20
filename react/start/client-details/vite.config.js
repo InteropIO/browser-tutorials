@@ -1,12 +1,12 @@
 import react from '@vitejs/plugin-react';
 
 export default {
-  base: './',
+  base: '/client-details',
   plugins: [
     react(),
   ],
   server: {
-    open: true,
-    port: 3000,
+    port: 3003,
+    open: true
   },
 };

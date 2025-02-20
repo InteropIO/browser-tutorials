@@ -1,11 +1,10 @@
-import React, { useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import { useIOConnect, IOConnectContext } from "@interopio/react-hooks";
 import { setClientFromWorkspace } from "./io";
 
 function ClientDetails() {
     const [client, setClient] = useState({});
     const io = useContext(IOConnectContext);
-    
     useIOConnect(setClientFromWorkspace(setClient));
 
     return (
