@@ -14,10 +14,10 @@
         "web-vitals": "^2.1.4"
     },
     "scripts": {
-        "start": "vite",
+        "dev": "vite",
         "build": "vite build",
-        "test": "vite test",
-        "eject": "vite eject"
+        "lint": "eslint .",
+        "preview": "vite preview"
     },
     "eslintConfig": {
         "extends": [
