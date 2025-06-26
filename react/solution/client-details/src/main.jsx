@@ -1,5 +1,4 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import "./index.css";
 import IOBrowser from "@interopio/browser"
 import { IOConnectProvider } from "@interopio/react-hooks";
@@ -16,9 +15,9 @@ const settings  = {
     }
 };
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
     <IOConnectProvider settings={settings}>
         <ClientDetails />
-    </IOConnectProvider>,
-    document.getElementById("root")
+    </IOConnectProvider>
 );

@@ -1,5 +1,3 @@
-import React from "react";
-
 function StockDetails() {
     const { RIC, BPOD, Bloomberg, Description, Exchange, Venues, Bid, Ask } = {};
 

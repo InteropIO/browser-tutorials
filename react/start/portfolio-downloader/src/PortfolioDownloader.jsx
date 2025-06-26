@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useIOConnect } from "@interopio/react-hooks";
 import { setupIntentListener } from "./io";
 

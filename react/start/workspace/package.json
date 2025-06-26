@@ -4,7 +4,7 @@
     "private": true,
     "description": "io.Connect Workspaces App",
     "scripts": {
-        "dev": "http-server -p 9300"
+        "start": "http-server -p 9300"
     },
     "keywords": [],
     "author": "",

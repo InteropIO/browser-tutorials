@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { REQUEST_OPTIONS } from "./constants";
 import { IOConnectContext, useIOConnect } from "@interopio/react-hooks";
 import { startAppWithWorkspace } from "./io";
