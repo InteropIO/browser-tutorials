@@ -5,6 +5,7 @@ import "./App.css";
 import StockDetails from "./StockDetails";
 
 
-const root = ReactDOM.render(document.getElementById("root"));
-
-root.render(<StockDetails />);
+const root = ReactDOM.createRoot(document.getElementById("root"));
+root.render(
+    <StockDetails />
+);
