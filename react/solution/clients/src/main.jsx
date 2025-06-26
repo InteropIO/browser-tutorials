@@ -13,13 +13,13 @@ const plugins = {
     definitions: [
         {
             name: "Setup Applications",
-            config: { url: "http://localhost:8080/api/applicationsReact"},
+            config: { url: "http://localhost:8080/api/applicationsReact" },
             start: setupApplications,
             critical: true
         },
         {
             name: "Setup Workspace Layouts",
-            config: { url: "http://localhost:8080/api/layouts"},
+            config: { url: "http://localhost:8080/api/layouts" },
             start: setupLayouts,
             critical: true
         }
@@ -38,7 +38,7 @@ const config = {
     plugins
 };
 
-const settings  = {
+const settings = {
     browserPlatform: {
         factory: IOBrowserPlatform,
         config,

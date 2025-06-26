@@ -8,7 +8,7 @@ import IOWorkspaces from "@interopio/workspaces-api";
 
 const config = { libraries: [IOWorkspaces] };
 
-const settings  = {
+const settings = {
     browser: {
         factory: IOBrowser,
         config
@@ -16,6 +16,7 @@ const settings  = {
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
+
 root.render(
     <IOConnectProvider settings={settings}>
         <ClientDetails />

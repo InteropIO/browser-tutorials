@@ -6,6 +6,5 @@ import StockDetails from "./StockDetails";
 
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-    <StockDetails />
-);
+
+root.render(<StockDetails />);
