@@ -4,6 +4,6 @@ export const setClientFromWorkspace = (setClient) => async (io) => {
         if (context) {
             setClient(context);
             myWorkspace.setTitle(context.clientName);
-        };
+        }
     });
 };

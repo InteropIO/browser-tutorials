@@ -3,7 +3,7 @@ import "./index.css";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import StockDetails from "./StockDetails";
-import IOBrowser from "@interopio/browser"
+import IOBrowser from "@interopio/browser";
 import { IOConnectProvider } from "@interopio/react-hooks";
 
 const settings = {

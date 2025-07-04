@@ -59,6 +59,6 @@ function ClientDetails() {
             </div>
         </div>
     );
-};
+}
 
 export default ClientDetails;

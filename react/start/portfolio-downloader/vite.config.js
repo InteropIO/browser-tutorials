@@ -1,12 +1,10 @@
-import react from "@vitejs/plugin-react"
+import react from "@vitejs/plugin-react";
 
 export default {
     base: "/portfolio-downloader",
-    plugins: [
-        react()
-    ],
+    plugins: [react()],
     server: {
         port: 9400,
         open: true
     }
-}
+};

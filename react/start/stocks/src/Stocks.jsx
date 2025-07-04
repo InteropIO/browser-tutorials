@@ -60,9 +60,7 @@ function Stocks() {
                         </thead>
                         <tbody>
                             {portfolio.map(({ RIC, Description, Bid, Ask, ...rest }) => (
-                                <tr
-                                    key={RIC}
-                                >
+                                <tr key={RIC}>
                                     <td>{RIC}</td>
                                     <td>{Description}</td>
                                     <td className="text-right">{Bid}</td>
@@ -75,6 +73,6 @@ function Stocks() {
             </div>
         </div>
     );
-};
+}
 
 export default Stocks;

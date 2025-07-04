@@ -1,4 +1,3 @@
-import React from "react";
 import chroma from "chroma-js";
 import Select from "react-select";
 
@@ -23,8 +22,8 @@ const dot = (color = "#ccc") => ({
 
 // The CSS for the different UI components of the channel selector widget.
 const colourStyles = {
-    container: styles => ({ ...styles, width: "148px" }),
-    control: styles => ({ ...styles, backgroundColor: "white" }),
+    container: (styles) => ({ ...styles, width: "148px" }),
+    control: (styles) => ({ ...styles, backgroundColor: "white" }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {
         const color = chroma(data.color || "#E4E5E9");
         return {
@@ -32,31 +31,35 @@ const colourStyles = {
             backgroundColor: isDisabled
                 ? null
                 : isSelected
-                    ? data.color
-                    : isFocused
-                        ? color.alpha(0.1).css()
-                        : null,
+                  ? data.color
+                  : isFocused
+                    ? color.alpha(0.1).css()
+                    : null,
             color: isDisabled
                 ? "#ccc"
                 : isSelected
-                    ? chroma.contrast(color, "white") > 2
-                        ? "white"
-                        : "black"
-                    : data.color,
+                  ? chroma.contrast(color, "white") > 2
+                      ? "white"
+                      : "black"
+                  : data.color,
             cursor: isDisabled ? "not-allowed" : "default",
             width: "148px",
             ":active": {
                 ...styles[":active"],
-                backgroundColor: !isDisabled && (isSelected ? data.color : color.alpha(0.3).css()),
-            },
+                backgroundColor: !isDisabled && (isSelected ? data.color : color.alpha(0.3).css())
+            }
         };
     },
-    input: styles => ({ ...styles, ...dot() }),
-    placeholder: styles => ({ ...styles, ...dot() }),
+    input: (styles) => ({ ...styles, ...dot() }),
+    placeholder: (styles) => ({ ...styles, ...dot() }),
     singleValue: (styles, { data }) => ({ ...styles, ...dot(data.color) })
 };
 
-function ChannelSelectorWidget({ channelNamesAndColors = [], onChannelSelected = () => { }, onDefaultChannelSelected = () => { } }) {
+function ChannelSelectorWidget({
+    channelNamesAndColors = [],
+    onChannelSelected = () => {},
+    onDefaultChannelSelected = () => {}
+}) {
     // The default channel that will always be part of the channel selector widget.
     const defaultChannel = {
         value: NO_CHANNEL_VALUE,
@@ -71,7 +74,7 @@ function ChannelSelectorWidget({ channelNamesAndColors = [], onChannelSelected =
         }))
     ];
 
-    const onChange = target => {
+    const onChange = (target) => {
         if (target.value === NO_CHANNEL_VALUE) onDefaultChannelSelected(target);
         else onChannelSelected(target);
     };
@@ -85,6 +88,6 @@ function ChannelSelectorWidget({ channelNamesAndColors = [], onChannelSelected =
             isSearchable={false}
         />
     );
-};
+}
 
 export default ChannelSelectorWidget;

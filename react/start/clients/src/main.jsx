@@ -6,7 +6,7 @@ import Clients from "./Clients";
 
 const config = {
     licenseKey: import.meta.env.VITE_LICENSE_KEY
-}
+};
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 

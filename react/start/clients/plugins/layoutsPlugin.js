@@ -7,5 +7,4 @@ const fetchWorkspaceLayoutDefinitions = async (url) => {
 
 const setupLayouts = async (io, { url }) => {
     // Call `fetchWorkspaceLayoutDefinitions()` and import the Layouts.
-
 };

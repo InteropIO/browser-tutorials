@@ -7,7 +7,7 @@ import { setupApplications } from "./plugins/applicationsPlugin";
 import { setupLayouts } from "./plugins/layoutsPlugin";
 import { IOConnectProvider } from "@interopio/react-hooks";
 import IOBrowserPlatform from "@interopio/browser-platform";
-import IOWorkspaces from '@interopio/workspaces-api';
+import IOWorkspaces from "@interopio/workspaces-api";
 
 const plugins = {
     definitions: [
@@ -24,13 +24,12 @@ const plugins = {
             critical: true
         }
     ]
-
-}
+};
 
 const config = {
     // Pass the `IOWorkspaces` factory function.
     browser: {
-        libraries: [IOWorkspaces],
+        libraries: [IOWorkspaces]
     },
     licenseKey: import.meta.env.VITE_LICENSE_KEY,
     // Specify the location of the Workspaces App.
@@ -41,8 +40,8 @@ const config = {
 const settings = {
     browserPlatform: {
         factory: IOBrowserPlatform,
-        config,
-    },
+        config
+    }
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -52,4 +51,3 @@ root.render(
         <Clients />
     </IOConnectProvider>
 );
-

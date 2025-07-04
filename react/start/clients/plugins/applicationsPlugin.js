@@ -7,5 +7,4 @@ const fetchAppDefinitions = async (url) => {
 
 const setupApplications = async (io, { url }) => {
     // Call `fetchAppDefinitions()` and import the app definitions.
-
 };

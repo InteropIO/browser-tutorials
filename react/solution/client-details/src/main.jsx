@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import IOBrowser from "@interopio/browser"
+import IOBrowser from "@interopio/browser";
 import { IOConnectProvider } from "@interopio/react-hooks";
 import "bootstrap/dist/css/bootstrap.css";
 import ClientDetails from "./ClientDetails";

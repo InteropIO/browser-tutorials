@@ -1,7 +1,4 @@
-import {
-    SET_PRICES_STREAM,
-    SHARED_CONTEXT_NAME
-} from "./constants";
+import { SET_PRICES_STREAM, SHARED_CONTEXT_NAME } from "./constants";
 
 export const getMyWindowContext = (setWindowContext) => async (io) => {
     const myWindow = io.windows.my();
@@ -12,7 +9,7 @@ export const getMyWindowContext = (setWindowContext) => async (io) => {
     myWindow.onContextUpdated((context) => {
         if (context) {
             setWindowContext({ stock: context.stock });
-        };
+        }
     });
 };
 
@@ -25,7 +22,7 @@ export const subscribeForInstrumentStream = (handler) => async (io, stock) => {
                 handler(stocks[stock]);
             } else if (Array.isArray(stock)) {
                 handler(stocks);
-            };
+            }
         };
         // Specify a handler for new data.
         subscription.onData(handleUpdates);
@@ -33,7 +30,7 @@ export const subscribeForInstrumentStream = (handler) => async (io, stock) => {
         subscription.onFailed(console.log);
 
         return subscription;
-    };
+    }
 };
 
 export const subscribeForSharedContext = (handler) => (io) => {

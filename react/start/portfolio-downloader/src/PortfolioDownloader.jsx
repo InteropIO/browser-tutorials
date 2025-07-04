@@ -15,10 +15,12 @@ function PortfolioDownloader() {
                 </div>
             </div>
             <div>
-                <h3 className="text-center">downloading portfolio {clientName ? "of " + clientName : ""} ...</h3>
+                <h3 className="text-center">
+                    downloading portfolio {clientName ? "of " + clientName : ""} ...
+                </h3>
             </div>
         </div>
     );
-};
+}
 
 export default PortfolioDownloader;

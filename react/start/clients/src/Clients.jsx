@@ -50,20 +50,22 @@ function Clients() {
                             </tr>
                         </thead>
                         <tbody>
-                            {clients.map(({ name, pId, gId, accountManager, portfolio, ...rest }) => (
-                                <tr key={pId}>
-                                    <td>{name}</td>
-                                    <td>{pId}</td>
-                                    <td>{gId}</td>
-                                    <td>{accountManager}</td>
-                                </tr>
-                            ))}
+                            {clients.map(
+                                ({ name, pId, gId, accountManager, portfolio, ...rest }) => (
+                                    <tr key={pId}>
+                                        <td>{name}</td>
+                                        <td>{pId}</td>
+                                        <td>{gId}</td>
+                                        <td>{accountManager}</td>
+                                    </tr>
+                                )
+                            )}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     );
-};
+}
 
 export default Clients;
