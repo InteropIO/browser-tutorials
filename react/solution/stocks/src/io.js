@@ -68,13 +68,13 @@ export const openStockDetails = (io) => async (stock) => {
     // Check whether an instance with the selected stock is already running.
     const contexts = await Promise.all(
         // Use the `instances` property to get all running application instances.
-        detailsApplication.instances.map(instance => instance.getContext())
+        detailsApplication.instances.map((instance) => instance.getContext())
     );
-    const isRunning = contexts.find(context => context.stock.RIC === stock.RIC);
+    const isRunning = contexts.find((context) => context.stock.RIC === stock.RIC);
 
     if (!isRunning) {
         detailsApplication.start({ stock }).catch(console.error);
-    };
+    }
 };
 
 export const registerSetClientMethod = (setClient) => (io) => {
@@ -96,7 +96,7 @@ export const subscribeForInstrumentStream = (handler) => async (io, stock) => {
                 handler(stocks[stock]);
             } else if (Array.isArray(stock)) {
                 handler(stocks);
-            };
+            }
         };
         // Specify a handler for new data.
         subscription.onData(handleUpdates);
@@ -104,22 +104,18 @@ export const subscribeForInstrumentStream = (handler) => async (io, stock) => {
         subscription.onFailed(console.log);
 
         return subscription;
-    };
+    }
 };
 
-export const setClientPortfolioSharedContext = (io) => (
-    {
-        clientId = "",
-        clientName = "",
-        portfolio = ""
-    }
-) => {
-    io.contexts.update(SHARED_CONTEXT_NAME, {
-        clientId,
-        clientName,
-        portfolio
-    });
-};
+export const setClientPortfolioSharedContext =
+    (io) =>
+    ({ clientId = "", clientName = "", portfolio = "" }) => {
+        io.contexts.update(SHARED_CONTEXT_NAME, {
+            clientId,
+            clientName,
+            portfolio
+        });
+    };
 
 export const subscribeForSharedContext = (handler) => (io) => {
     // Subscribing for the shared context by
@@ -146,18 +142,20 @@ export const getChannelNamesAndColors = async (io) => {
 };
 
 // This function will join a given Channel.
-export const joinChannel = (io) => ({ value: channelName }) => {
-    if (channelName === NO_CHANNEL_VALUE) {
-        // Checking for the current Channel.
-        if (io.channels.my()) {
-            // Leaving a Channel.
-            io.channels.leave();
+export const joinChannel =
+    (io) =>
+    ({ value: channelName }) => {
+        if (channelName === NO_CHANNEL_VALUE) {
+            // Checking for the current Channel.
+            if (io.channels.my()) {
+                // Leaving a Channel.
+                io.channels.leave();
+            }
+        } else {
+            // Joining a Channel.
+            io.channels.join(channelName);
         }
-    } else {
-        // Joining a Channel.
-        io.channels.join(channelName);
     };
-};
 
 export const subscribeForChannels = (handler) => (io) => {
     // Subscribing for updates to the current channel.
@@ -176,7 +174,7 @@ export const setClientFromWorkspace = (setClient) => async (io) => {
     myWorkspace.onContextUpdated((context) => {
         if (context) {
             setClient(context);
-        };
+        }
     });
 };
 
@@ -187,7 +185,9 @@ export const openStockDetailsInWorkspace = (io) => async (stock) => {
     const myWorkspace = await io.workspaces.getMyWorkspace();
 
     // Reference to the `WorkspaceWindow` object of the Stock Details instance.
-    let detailsWorkspaceWindow = myWorkspace.getWindow(window => window.appName === "Stock Details");
+    let detailsWorkspaceWindow = myWorkspace.getWindow(
+        (window) => window.appName === "Stock Details"
+    );
 
     // Check whether the Stock Details has already been opened.
     if (detailsWorkspaceWindow) {
@@ -196,7 +196,7 @@ export const openStockDetailsInWorkspace = (io) => async (stock) => {
         // Reference to the current window.
         const myId = io.windows.my().id;
         // Reference to the immediate parent element of the Stocks window.
-        const myImmediateParent = myWorkspace.getWindow(window => window.id === myId).parent;
+        const myImmediateParent = myWorkspace.getWindow((window) => window.id === myId).parent;
         // Add a `Group` element as a sibling of the immediate parent of the Stocks window.
         const group = await myImmediateParent.parent.addGroup();
 
@@ -204,20 +204,19 @@ export const openStockDetailsInWorkspace = (io) => async (stock) => {
         detailsWorkspaceWindow = await group.addWindow({ appName: "Stock Details" });
         await detailsWorkspaceWindow.forceLoad();
         detailsWindow = detailsWorkspaceWindow.getGdWindow();
-    };
+    }
 
     // Update the window context with the selected stock.
     detailsWindow.updateContext({ stock });
 };
 
 export const raiseExportPortfolioIntentRequest = (io) => async (portfolio, clientName) => {
-
     try {
         const intents = await io.intents.find("ExportPortfolio");
 
         if (!intents) {
             return;
-        };
+        }
 
         const intentRequest = {
             intent: "ExportPortfolio",
@@ -228,8 +227,7 @@ export const raiseExportPortfolioIntentRequest = (io) => async (portfolio, clien
         };
 
         await io.intents.raise(intentRequest);
-
-    } catch(error) {
+    } catch (error) {
         console.error(error.message);
     }
 };

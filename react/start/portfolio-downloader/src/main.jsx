@@ -1,19 +1,20 @@
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { IOConnectProvider } from "@interopio/react-hooks";
 import IOBrowser from "@interopio/browser";
-import PortfolioDownloader from './PortfolioDownloader';
+import PortfolioDownloader from "./PortfolioDownloader";
 import "bootstrap/dist/css/bootstrap.css";
 import "./index.css";
 
 const settings = {
     browser: {
-        factory: IOBrowser,
+        factory: IOBrowser
     }
 };
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(
     <IOConnectProvider settings={settings}>
         <PortfolioDownloader />
-    </IOConnectProvider>,
-    document.getElementById("root")
+    </IOConnectProvider>
 );

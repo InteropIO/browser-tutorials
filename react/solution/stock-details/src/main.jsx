@@ -1,11 +1,9 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "bootstrap/dist/css/bootstrap.css";
+import ReactDOM from "react-dom/client";
 import "./index.css";
 import "./App.css";
+import "bootstrap/dist/css/bootstrap.css";
 import StockDetails from "./StockDetails";
-import * as serviceWorker from "./serviceWorker";
-import IOBrowser from "@interopio/browser"
+import IOBrowser from "@interopio/browser";
 import { IOConnectProvider } from "@interopio/react-hooks";
 
 const settings = {
@@ -14,11 +12,10 @@ const settings = {
     }
 };
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(
     <IOConnectProvider settings={settings}>
         <StockDetails />
-    </IOConnectProvider>,
-    document.getElementById("root")
+    </IOConnectProvider>
 );
-
-serviceWorker.register();

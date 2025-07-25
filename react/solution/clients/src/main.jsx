@@ -1,240 +1,53 @@
-import React from "react";
-import ReactDOM from "react-dom";
-import "bootstrap/dist/css/bootstrap.css";
+import ReactDOM from "react-dom/client";
 import "./index.css";
 import "./App.css";
+import "bootstrap/dist/css/bootstrap.css";
 import Clients from "./Clients";
 import { setupApplications } from "./plugins/applicationsPlugin";
 import { setupLayouts } from "./plugins/layoutsPlugin";
-import * as serviceWorker from "./serviceWorker";
 import { IOConnectProvider } from "@interopio/react-hooks";
 import IOBrowserPlatform from "@interopio/browser-platform";
-import IOWorkspaces from '@interopio/workspaces-api';
-// // Defining Workspace layouts.
-// const layouts = {
-//     mode: "idb",
-//     local: [
-//         {
-//             name: "Client Space",
-//             type: "Workspace",
-//             metadata: {},
-//             components: [
-//                 {
-//                     type: "Workspace",
-//                     state: {
-//                         children: [
-//                             {
-//                                 type: "column",
-//                                 children: [
-//                                     {
-//                                         type: "row",
-//                                         children: [
-//                                             {
-//                                                 type: "group",
-//                                                 children: [
-//                                                     {
-//                                                         type: "window",
-//                                                         config: {
-//                                                             appName: "Client Details",
-//                                                             title: "React App",
-//                                                             context: {}
-//                                                         }
-//                                                     }
-//                                                 ],
-//                                                 config: {}
-//                                             },
-//                                             {
-//                                                 type: "column",
-//                                                 children: [
-//                                                     {
-//                                                         type: "group",
-//                                                         children: [
-//                                                             {
-//                                                                 type: "window",
-//                                                                 config: {
-//                                                                     appName: "Stocks",
-//                                                                     title: "React App",
-//                                                                     context: {}
-//                                                                 }
-//                                                             }
-//                                                         ],
-//                                                         config: {}
-//                                                     }
-//                                                 ],
-//                                                 config: {}
-//                                             }
-//                                         ],
-//                                         config: {}
-//                                     }
-//                                 ],
-//                                 config: {}
-//                             }
-//                         ],
-//                         config: {
-//                             name: "Client Space",
-//                             title: "Untitled 1"
-//                         },
-//                         context: {}
-//                     }
-//                 }
-//             ]
-//         }
-//     ]
-// };
-
-// // Defining system Channels.
-// const channels = {
-//     definitions: [
-//         {
-//             name: "Red",
-//             meta: {
-//                 color: "red"
-//             }
-//         },
-//         {
-//             name: "Green",
-//             meta: {
-//                 color: "green"
-//             }
-//         },
-//         {
-//             name: "Blue",
-//             meta: {
-//                 color: "#66ABFF"
-//             }
-//         },
-//         {
-//             name: "Pink",
-//             meta: {
-//                 color: "#F328BB"
-//             }
-//         },
-//         {
-//             name: "Yellow",
-//             meta: {
-//                 color: "#FFE733"
-//             }
-//         },
-//         {
-//             name: "Dark Yellow",
-//             meta: {
-//                 color: "#b09b00"
-//             }
-//         },
-//         {
-//             name: "Orange",
-//             meta: {
-//                 color: "#fa5a28"
-//             }
-//         },
-//         {
-//             name: "Purple",
-//             meta: {
-//                 color: "#c873ff"
-//             }
-//         },
-//         {
-//             name: "Lime",
-//             meta: {
-//                 color: "#8af59e"
-//             }
-//         },
-//         {
-//             name: "Cyan",
-//             meta: {
-//                 color: "#80f3ff"
-//             }
-//         }
-//     ]
-// };
-
-// // Define application configurations.
-// const applications = {
-//     local: [
-//         {
-//             name: "Clients",
-//             type: "window",
-//             details: {
-//                 url: "http://localhost:3000/clients"
-//             }
-//         },
-//         {
-//             name: "Stocks",
-//             type: "window",
-//             details: {
-//                 url: "http://localhost:3001/stocks",
-//                 left: 0,
-//                 top: 0,
-//                 width: 860,
-//                 height: 600
-//             }
-//         },
-//         {
-//             name: "Stock Details",
-//             type: "window",
-//             details: {
-//                 url: "http://localhost:3002/details",
-//                 left: 100,
-//                 top: 100,
-//                 width: 400,
-//                 height: 400
-//             }
-//         },
-//         {
-//             name: "Client Details",
-//             type: "window",
-//             details: {
-//                 url: "http://localhost:3003/client-details"
-//             }
-//         }
-//     ]
-// };
+import IOWorkspaces from "@interopio/workspaces-api";
 
 const plugins = {
     definitions: [
         {
             name: "Setup Applications",
-            config: { url: "http://localhost:8080/api/applicationsReact"},
+            config: { url: "http://localhost:8080/api/applicationsReact" },
             start: setupApplications,
             critical: true
         },
         {
             name: "Setup Workspace Layouts",
-            config: { url: "http://localhost:8080/api/layouts"},
+            config: { url: "http://localhost:8080/api/layouts" },
             start: setupLayouts,
             critical: true
         }
     ]
+};
 
-}
-
-// Define the configuration object and pass it to the factory function.
 const config = {
     // Pass the `IOWorkspaces` factory function.
     browser: {
-        libraries: [IOWorkspaces],
+        libraries: [IOWorkspaces]
     },
     licenseKey: import.meta.env.VITE_LICENSE_KEY,
     // Specify the location of the Workspaces App.
     workspaces: { src: "http://localhost:9300/" },
-    // layouts,
-    // channels,
-    // applications
     plugins
 };
 
-const settings  = {
+const settings = {
     browserPlatform: {
         factory: IOBrowserPlatform,
-        config,
-    },
+        config
+    }
 };
 
-ReactDOM.render(
+const root = ReactDOM.createRoot(document.getElementById("root"));
+
+root.render(
     <IOConnectProvider settings={settings}>
         <Clients />
-    </IOConnectProvider>,
-    document.getElementById("root")
+    </IOConnectProvider>
 );
-
-serviceWorker.register();

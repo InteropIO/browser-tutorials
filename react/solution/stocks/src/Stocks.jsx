@@ -25,9 +25,7 @@ function Stocks() {
         const fetchPortfolio = async () => {
             try {
                 // Close the existing subscription when a new client has been selected.
-                subscription &&
-                    typeof subscription.close === "function" &&
-                    subscription.close();
+                subscription && typeof subscription.close === "function" && subscription.close();
 
                 const url = `http://localhost:8080${clientId ? `/api/portfolio/${clientId}` : "/api/portfolio"}`;
                 const response = await fetch(url, REQUEST_OPTIONS);
@@ -35,7 +33,7 @@ function Stocks() {
                 setPortfolio(portfolio);
             } catch (error) {
                 console.error(error);
-            };
+            }
         };
         fetchPortfolio();
     }, [clientId]);
@@ -106,7 +104,9 @@ function Stocks() {
                             {portfolio.map(({ RIC, Description, Bid, Ask, ...rest }) => (
                                 <tr
                                     key={RIC}
-                                    onClick={() => showStockDetails({ RIC, Description, Bid, Ask, ...rest })}
+                                    onClick={() =>
+                                        showStockDetails({ RIC, Description, Bid, Ask, ...rest })
+                                    }
                                 >
                                     <td>{RIC}</td>
                                     <td>{Description}</td>

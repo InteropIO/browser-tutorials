@@ -1,4 +1,4 @@
-import React, { useState, useContext} from "react";
+import { useState, useContext } from "react";
 import { useIOConnect, IOConnectContext } from "@interopio/react-hooks";
 import { setClientFromWorkspace } from "./io";
 
@@ -59,6 +59,6 @@ function ClientDetails() {
             </div>
         </div>
     );
-};
+}
 
 export default ClientDetails;

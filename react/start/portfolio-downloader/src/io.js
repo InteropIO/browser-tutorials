@@ -1,23 +1,25 @@
 export const setupIntentListener = (setClientName) => (io) => {
     const intentHandler = (context) => {
-
         if (context.type !== "ClientPortfolio") {
             return;
-        };
+        }
 
         setClientName(context.data.clientName);
         startPortfolioDownload(context.data.clientName, context.data.portfolio);
     };
 
     // Pass `intentHandler()` to the `register()` method.
-
 };
 
 const startPortfolioDownload = (clientName, portfolio) => {
-    const dataToWrite = JSON.stringify({
-        date: new Date(Date.now()).toLocaleString("en-US"),
-        portfolio
-    }, null, 4);
+    const dataToWrite = JSON.stringify(
+        {
+            date: new Date(Date.now()).toLocaleString("en-US"),
+            portfolio
+        },
+        null,
+        4
+    );
 
     const element = document.createElement("a");
     const blob = new Blob([dataToWrite], { type: "application/json" });

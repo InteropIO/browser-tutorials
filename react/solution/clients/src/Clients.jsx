@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { REQUEST_OPTIONS } from "./constants";
 import { IOConnectContext, useIOConnect } from "@interopio/react-hooks";
 import { startAppWithWorkspace } from "./io";
@@ -52,19 +52,27 @@ function Clients() {
                             </tr>
                         </thead>
                         <tbody>
-                            {clients.map(({ name, pId, gId, accountManager, portfolio, ...rest }) => (
-                                <tr
-                                    key={pId}
-                                    onClick={() => {
-                                        openWorkspace({ clientId: gId, clientName: name, accountManager, portfolio, ...rest });
-                                    }}
-                                >
-                                    <td>{name}</td>
-                                    <td>{pId}</td>
-                                    <td>{gId}</td>
-                                    <td>{accountManager}</td>
-                                </tr>
-                            ))}
+                            {clients.map(
+                                ({ name, pId, gId, accountManager, portfolio, ...rest }) => (
+                                    <tr
+                                        key={pId}
+                                        onClick={() => {
+                                            openWorkspace({
+                                                clientId: gId,
+                                                clientName: name,
+                                                accountManager,
+                                                portfolio,
+                                                ...rest
+                                            });
+                                        }}
+                                    >
+                                        <td>{name}</td>
+                                        <td>{pId}</td>
+                                        <td>{gId}</td>
+                                        <td>{accountManager}</td>
+                                    </tr>
+                                )
+                            )}
                         </tbody>
                     </table>
                 </div>

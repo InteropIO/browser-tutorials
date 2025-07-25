@@ -1,12 +1,9 @@
-import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import "bootstrap/dist/css/bootstrap.css";
 import "./index.css";
 import "./App.css";
 import StockDetails from "./StockDetails";
-import * as serviceWorker from "./serviceWorker";
 
+const root = ReactDOM.createRoot(document.getElementById("root"));
 
-ReactDOM.render(<StockDetails />, document.getElementById("root"));
-
-serviceWorker.register();
+root.render(<StockDetails />);

@@ -1,15 +1,14 @@
 import React, { useContext, useState } from "react";
-import { useIOConnect, IOConnectContext } from "@interopio/react-hooks"
+import { useIOConnect, IOConnectContext } from "@interopio/react-hooks";
 import { getMyWindowContext, subscribeForInstrumentStream } from "./io";
 
 function StockDetails() {
     const io = useContext(IOConnectContext);
     const [windowContext, setWindowContext] = useState({});
     useIOConnect(getMyWindowContext(setWindowContext));
-    const {
-        stock: { RIC, BPOD, Bloomberg, Description, Exchange, Venues } = {}
-    } = windowContext || {};
-    const [{ Bid, Ask }, setPrices] = useState({ Bid: windowContext.Bid, Ask: windowContext.Ask});
+    const { stock: { RIC, BPOD, Bloomberg, Description, Exchange, Venues } = {} } =
+        windowContext || {};
+    const [{ Bid, Ask }, setPrices] = useState({ Bid: windowContext.Bid, Ask: windowContext.Ask });
     useIOConnect(subscribeForInstrumentStream(setPrices), [RIC]);
 
     return (

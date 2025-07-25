@@ -1,5 +1,3 @@
-import React from "react";
-
 function StockDetails() {
     const { RIC, BPOD, Bloomberg, Description, Exchange, Venues, Bid, Ask } = {};
 
@@ -64,6 +62,6 @@ function StockDetails() {
             </div>
         </div>
     );
-};
+}
 
 export default StockDetails;
