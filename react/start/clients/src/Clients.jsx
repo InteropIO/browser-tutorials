@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { REQUEST_OPTIONS } from "./constants";
 
 function Clients() {
@@ -20,13 +20,13 @@ function Clients() {
         <div className="container-fluid">
             <div className="row">
                 {/* <div className="col-md-2">
-                    {!glue && (
-                        <span id="glueSpan" className="badge badge-warning">
+                    {!io && (
+                        <span id="ioConnectSpan" className="badge badge-warning">
                             io.Connect is unavailable
                         </span>
                     )}
-                    {glue && (
-                        <span id="glueSpan" className="badge badge-success">
+                    {io && (
+                        <span id="ioConnectSpan" className="badge badge-success">
                             io.Connect is available
                         </span>
                     )}
@@ -50,20 +50,22 @@ function Clients() {
                             </tr>
                         </thead>
                         <tbody>
-                            {clients.map(({ name, pId, gId, accountManager, portfolio, ...rest }) => (
-                                <tr key={pId}>
-                                    <td>{name}</td>
-                                    <td>{pId}</td>
-                                    <td>{gId}</td>
-                                    <td>{accountManager}</td>
-                                </tr>
-                            ))}
+                            {clients.map(
+                                ({ name, pId, gId, accountManager, portfolio, ...rest }) => (
+                                    <tr key={pId}>
+                                        <td>{name}</td>
+                                        <td>{pId}</td>
+                                        <td>{gId}</td>
+                                        <td>{accountManager}</td>
+                                    </tr>
+                                )
+                            )}
                         </tbody>
                     </table>
                 </div>
             </div>
         </div>
     );
-};
+}
 
 export default Clients;

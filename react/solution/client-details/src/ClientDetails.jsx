@@ -1,16 +1,26 @@
-import React, { useState } from "react";
-import { useGlue } from "@glue42/react-hooks";
-import { setClientFromWorkspace } from "./glue";
+import { useState, useContext } from "react";
+import { useIOConnect, IOConnectContext } from "@interopio/react-hooks";
+import { setClientFromWorkspace } from "./io";
 
 function ClientDetails() {
     const [client, setClient] = useState({});
-    useGlue(setClientFromWorkspace(setClient));
+    const io = useContext(IOConnectContext);
+    useIOConnect(setClientFromWorkspace(setClient));
 
     return (
         <div className="container-fluid">
             <div className="row">
                 <div className="col-md-2">
-                    <span id="glueSpan" className="label label-warning">io.Connect is unavailable</span>
+                    {!io && (
+                        <span id="ioConnectSpan" className="badge badge-warning">
+                            io.Connect is unavailable
+                        </span>
+                    )}
+                    {io && (
+                        <span id="ioConnectSpan" className="badge badge-success">
+                            io.Connect is available
+                        </span>
+                    )}
                 </div>
                 <div className="col-md-10">
                     <h1 className="text-center">Client Details</h1>
@@ -49,6 +59,6 @@ function ClientDetails() {
             </div>
         </div>
     );
-};
+}
 
 export default ClientDetails;

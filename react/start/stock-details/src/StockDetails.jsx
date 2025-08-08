@@ -1,5 +1,3 @@
-import React from "react";
-
 function StockDetails() {
     const { RIC, BPOD, Bloomberg, Description, Exchange, Venues, Bid, Ask } = {};
 
@@ -7,13 +5,13 @@ function StockDetails() {
         <div className="container-fluid">
             <div className="row">
                 {/* <div className="col-md-2">
-                    {!glue && (
-                        <span id="glueSpan" className="badge badge-warning">
+                    {!io && (
+                        <span id="ioConnectSpan" className="badge badge-warning">
                             io.Connect is unavailable
                         </span>
                     )}
-                    {glue && (
-                        <span id="glueSpan" className="badge badge-success">
+                    {io && (
+                        <span id="ioConnectSpan" className="badge badge-success">
                             io.Connect is available
                         </span>
                     )}
@@ -64,6 +62,6 @@ function StockDetails() {
             </div>
         </div>
     );
-};
+}
 
 export default StockDetails;

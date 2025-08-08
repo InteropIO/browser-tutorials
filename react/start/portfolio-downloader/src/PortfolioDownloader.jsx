@@ -1,11 +1,11 @@
-import React, { useState } from "react";
-import { useGlue } from "@glue42/react-hooks";
-import { setupIntentListener } from "./glue";
+import { useState } from "react";
+import { useIOConnect } from "@interopio/react-hooks";
+import { setupIntentListener } from "./io";
 
 function PortfolioDownloader() {
     const [clientName, setClientName] = useState("");
 
-    useGlue(setupIntentListener(setClientName));
+    useIOConnect(setupIntentListener(setClientName));
 
     return (
         <div className="container-fluid">
@@ -15,10 +15,12 @@ function PortfolioDownloader() {
                 </div>
             </div>
             <div>
-                <h3 className="text-center">downloading portfolio {clientName ? "of " + clientName : ""} ...</h3>
+                <h3 className="text-center">
+                    downloading portfolio {clientName ? "of " + clientName : ""} ...
+                </h3>
             </div>
         </div>
     );
-};
+}
 
 export default PortfolioDownloader;

@@ -1,16 +1,16 @@
 const fetchWorkspaceLayoutDefinitions = async (url) => {
-  const layoutDefinitionsResponse = await fetch(url);
-  const layoutDefinitions = await layoutDefinitionsResponse.json();
+    const layoutDefinitionsResponse = await fetch(url);
+    const layoutDefinitions = await layoutDefinitionsResponse.json();
 
-  return layoutDefinitions;
+    return layoutDefinitions;
 };
 
-export const setupLayouts = async (glue, { url }) => {
-  try {
-      const layoutDefinitions = await fetchWorkspaceLayoutDefinitions(url);
+export const setupLayouts = async (io, { url }) => {
+    try {
+        const layoutDefinitions = await fetchWorkspaceLayoutDefinitions(url);
 
-      await glue.layouts.import(layoutDefinitions);
-  } catch (error) {
-      console.error(error.message);
-  };
+        await io.layouts.import(layoutDefinitions);
+    } catch (error) {
+        console.error(error.message);
+    }
 };

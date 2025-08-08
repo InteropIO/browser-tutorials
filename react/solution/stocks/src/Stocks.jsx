@@ -1,22 +1,22 @@
 import React, { useEffect, useState, useContext } from "react";
 import { REQUEST_OPTIONS } from "./constants";
-import { GlueContext, useGlue } from "@glue42/react-hooks";
+import { useIOConnect, IOConnectContext } from "@interopio/react-hooks";
 import {
     createInstrumentStream,
     subscribeForInstrumentStream,
     setClientFromWorkspace,
     openStockDetailsInWorkspace,
     raiseExportPortfolioIntentRequest
-} from "./glue";
+} from "./io";
 
 function Stocks() {
     const [portfolio, setPortfolio] = useState([]);
     const [{ clientId, clientName }, setClient] = useState({});
     const [prices, setPrices] = useState({});
-    const subscription = useGlue(
-        (glue, portfolio) => {
+    const subscription = useIOConnect(
+        (io, portfolio) => {
             if (portfolio.length > 0) {
-                return subscribeForInstrumentStream(setPrices)(glue, portfolio);
+                return subscribeForInstrumentStream(setPrices)(io, portfolio);
             }
         },
         [portfolio]
@@ -25,9 +25,7 @@ function Stocks() {
         const fetchPortfolio = async () => {
             try {
                 // Close the existing subscription when a new client has been selected.
-                subscription &&
-                    typeof subscription.close === "function" &&
-                    subscription.close();
+                subscription && typeof subscription.close === "function" && subscription.close();
 
                 const url = `http://localhost:8080${clientId ? `/api/portfolio/${clientId}` : "/api/portfolio"}`;
                 const response = await fetch(url, REQUEST_OPTIONS);
@@ -35,29 +33,29 @@ function Stocks() {
                 setPortfolio(portfolio);
             } catch (error) {
                 console.error(error);
-            };
+            }
         };
         fetchPortfolio();
     }, [clientId]);
 
-    const glue = useContext(GlueContext);
-    const showStockDetails = useGlue(openStockDetailsInWorkspace);
-    useGlue(createInstrumentStream);
+    const io = useContext(IOConnectContext);
+    const showStockDetails = useIOConnect(openStockDetailsInWorkspace);
+    useIOConnect(createInstrumentStream);
     const setDefaultClient = () => setClient({ clientId: "", clientName: "" });
-    useGlue(setClientFromWorkspace(setClient));
-    const exportPortfolioButtonHandler = useGlue(raiseExportPortfolioIntentRequest);
+    useIOConnect(setClientFromWorkspace(setClient));
+    const exportPortfolioButtonHandler = useIOConnect(raiseExportPortfolioIntentRequest);
 
     return (
         <div className="container-fluid">
             <div className="row">
                 <div className="col-md-2">
-                    {!glue && (
-                        <span id="glueSpan" className="badge badge-warning">
+                    {!io && (
+                        <span id="ioConnectSpan" className="badge badge-warning">
                             io.Connect is unavailable
                         </span>
                     )}
-                    {glue && (
-                        <span id="glueSpan" className="badge badge-success">
+                    {io && (
+                        <span id="ioConnectSpan" className="badge badge-success">
                             io.Connect is available
                         </span>
                     )}
@@ -106,7 +104,9 @@ function Stocks() {
                             {portfolio.map(({ RIC, Description, Bid, Ask, ...rest }) => (
                                 <tr
                                     key={RIC}
-                                    onClick={() => showStockDetails({ RIC, Description, Bid, Ask, ...rest })}
+                                    onClick={() =>
+                                        showStockDetails({ RIC, Description, Bid, Ask, ...rest })
+                                    }
                                 >
                                     <td>{RIC}</td>
                                     <td>{Description}</td>

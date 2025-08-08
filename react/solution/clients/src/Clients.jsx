@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { REQUEST_OPTIONS } from "./constants";
-import { GlueContext, useGlue } from "@glue42/react-hooks";
-import { startAppWithWorkspace } from "./glue";
+import { IOConnectContext, useIOConnect } from "@interopio/react-hooks";
+import { startAppWithWorkspace } from "./io";
 
 function Clients() {
     const [clients, setClients] = useState([]);
@@ -17,21 +17,21 @@ function Clients() {
         };
         fetchClients();
     }, []);
-    const glue = useContext(GlueContext);
-    window.glue = glue;
-    const openWorkspace = useGlue(startAppWithWorkspace);
+    const io = useContext(IOConnectContext);
+    window.io = io;
+    const openWorkspace = useIOConnect(startAppWithWorkspace);
 
     return (
         <div className="container-fluid">
             <div className="row">
                 <div className="col-md-2">
-                    {!glue && (
-                        <span id="glueSpan" className="badge badge-warning">
+                    {!io && (
+                        <span id="ioConnectSpan" className="badge badge-warning">
                             io.Connect is unavailable
                         </span>
                     )}
-                    {glue && (
-                        <span id="glueSpan" className="badge badge-success">
+                    {io && (
+                        <span id="ioConnectSpan" className="badge badge-success">
                             io.Connect is available
                         </span>
                     )}
@@ -52,19 +52,27 @@ function Clients() {
                             </tr>
                         </thead>
                         <tbody>
-                            {clients.map(({ name, pId, gId, accountManager, portfolio, ...rest }) => (
-                                <tr
-                                    key={pId}
-                                    onClick={() => {
-                                        openWorkspace({ clientId: gId, clientName: name, accountManager, portfolio, ...rest });
-                                    }}
-                                >
-                                    <td>{name}</td>
-                                    <td>{pId}</td>
-                                    <td>{gId}</td>
-                                    <td>{accountManager}</td>
-                                </tr>
-                            ))}
+                            {clients.map(
+                                ({ name, pId, gId, accountManager, portfolio, ...rest }) => (
+                                    <tr
+                                        key={pId}
+                                        onClick={() => {
+                                            openWorkspace({
+                                                clientId: gId,
+                                                clientName: name,
+                                                accountManager,
+                                                portfolio,
+                                                ...rest
+                                            });
+                                        }}
+                                    >
+                                        <td>{name}</td>
+                                        <td>{pId}</td>
+                                        <td>{gId}</td>
+                                        <td>{accountManager}</td>
+                                    </tr>
+                                )
+                            )}
                         </tbody>
                     </table>
                 </div>
