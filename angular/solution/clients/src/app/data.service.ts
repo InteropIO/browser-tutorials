@@ -1,12 +1,13 @@
-import { Injectable } from "@angular/core";
+import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Client, Channel } from './types';
+import { firstValueFrom } from 'rxjs';
+import { Client } from './types';
 
 @Injectable()
 export class DataService {
-    constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient) {}
 
-    public getClients(): Promise<Client[]> {
-        return this.http.get<Client[]>('http://localhost:8080/api/clients').toPromise();
-    }
+  public getClients(): Promise<Client[]> {
+    return firstValueFrom(this.http.get<Client[]>('http://localhost:8080/api/clients'));
+  }
 }
