@@ -1,7 +1,11 @@
 <body>
     <header>
         <h1 class="io-title-large">Client Details</h1>
-        <div [ngClass]="ioConnectStatus() === 'available' ? 'io-pill io-pill-success' : 'io-pill io-pill-critical'">{{ ioConnectStatus() }}</div>
+        <div
+            [ngClass]="ioConnectStatus() === 'available' ? 'io-pill io-pill-success' : 'io-pill io-pill-critical'"
+        >
+            {{ ioConnectStatus() }}
+        </div>
     </header>
 
     <div class="table-container">

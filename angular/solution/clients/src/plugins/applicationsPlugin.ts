@@ -8,7 +8,10 @@ const fetchAppDefinitions = async (url: string) => {
     return appDefinitions;
 };
 
-export const setupApplications = async (io: IOConnectBrowser.API, config: { url: string }) => {
+export const setupApplications = async (
+    io: IOConnectBrowser.API,
+    config: { url: string }
+) => {
     try {
         const appDefinitions = await fetchAppDefinitions(config.url);
 

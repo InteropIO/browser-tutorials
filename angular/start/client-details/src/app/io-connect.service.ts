@@ -3,7 +3,6 @@ import { Observable, Subject } from "rxjs";
 
 import { Client } from "./types";
 
-
 @Injectable()
 export class IOConnectService {
     private readonly selectedClientSource = new Subject<Client>();
