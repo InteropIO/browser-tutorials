@@ -1,3 +1,5 @@
+import IOBrowser from '@interopio/browser';
+
 const intentHandler = (context) => {
     if (!context) {
         return;
