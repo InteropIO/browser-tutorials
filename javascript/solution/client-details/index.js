@@ -42,9 +42,9 @@ const start = async () => {
             if (context.client) {
                 setFields(context.client);
                 myWorkspace.setTitle(context.client.name);
-            }
+            };
         });
-    }
+    };
 };
 
 start().catch(console.error);
