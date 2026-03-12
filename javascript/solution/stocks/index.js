@@ -1,3 +1,6 @@
+import IOBrowser from '@interopio/browser';
+import IOWorkspaces from '@interopio/workspaces-api';
+
 let clientPortfolioStocks;
 let clientName;
 

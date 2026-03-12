@@ -1,3 +1,12 @@
+// TODO: Chapter 2
+// import IOBrowserPlatform from '@interopio/browser-platform';
+// TODO: Chapter 9.3
+// import IOWorkspaces from '@interopio/workspaces-api';
+// TODO: Chapter 8.2
+// import { setupApplications } from './plugins/applicationsPlugin.js';
+// TODO: Chapter 9.2
+// import { setupLayouts } from './plugins/layoutsPlugin.js';
+
 const setupClients = (clients) => {
     const table = document.getElementById("clientsTable").getElementsByTagName("tbody")[0];
 

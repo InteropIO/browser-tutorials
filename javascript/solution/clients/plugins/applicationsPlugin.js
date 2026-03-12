@@ -5,7 +5,7 @@ const fetchAppDefinitions = async (url) => {
     return appDefinitions;
 };
 
-const setupApplications = async (io, { url }) => {
+export const setupApplications = async (io, { url }) => {
     try {
         const appDefinitions = await fetchAppDefinitions(url);
 
