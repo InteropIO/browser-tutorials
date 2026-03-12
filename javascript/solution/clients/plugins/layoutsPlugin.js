@@ -5,7 +5,7 @@ const fetchWorkspaceLayoutDefinitions = async (url) => {
     return layoutDefinitions;
 };
 
-const setupLayouts = async (io, { url }) => {
+export const setupLayouts = async (io, { url }) => {
     try {
         const layoutDefinitions = await fetchWorkspaceLayoutDefinitions(url);
 

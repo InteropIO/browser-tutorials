@@ -1,3 +1,8 @@
+// TODO: Chapter 2
+// import IOBrowser from '@interopio/browser';
+// TODO: Chapter 9.3
+// import IOWorkspaces from '@interopio/workspaces-api';
+
 let clientPortfolioStocks;
 let clientName;
 
