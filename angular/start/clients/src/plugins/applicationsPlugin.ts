@@ -7,5 +7,5 @@ const fetchAppDefinitions = async (url: string) => {
 };
 
 export const setupApplications = async () => {
-    
+
 };

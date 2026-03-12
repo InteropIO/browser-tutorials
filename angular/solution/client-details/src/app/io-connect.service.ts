@@ -7,8 +7,11 @@ import { Client, IOConnectStatus } from "./types";
 @Injectable()
 export class IOConnectService {
     private readonly selectedClientSource = new Subject<Client>();
-    
-    constructor (private readonly ioConnectStore: IOConnectStore, private readonly _zone: NgZone) {
+
+    constructor(
+        private readonly ioConnectStore: IOConnectStore,
+        private readonly _zone: NgZone
+    ) {
         (window as any).io = this.ioConnectStore.getIOConnect();
     }
 
@@ -21,7 +24,9 @@ export class IOConnectService {
     }
 
     public async subscribeToWorkspaceContextUpdate(): Promise<void> {
-        const myWorkspace = await this.ioConnectStore.getIOConnect().workspaces?.getMyWorkspace();
+        const myWorkspace = await this.ioConnectStore
+            .getIOConnect()
+            .workspaces?.getMyWorkspace();
 
         if (!myWorkspace) {
             return;

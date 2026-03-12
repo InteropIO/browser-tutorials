@@ -8,9 +8,14 @@ const fetchWorkspaceLayoutDefinitions = async (url: string) => {
     return layoutDefinitions;
 };
 
-export const setupLayouts = async (io: IOConnectBrowser.API, config: { url: string }) => {
+export const setupLayouts = async (
+    io: IOConnectBrowser.API,
+    config: { url: string }
+) => {
     try {
-        const layoutDefinitions = await fetchWorkspaceLayoutDefinitions(config.url);
+        const layoutDefinitions = await fetchWorkspaceLayoutDefinitions(
+            config.url
+        );
 
         await io.layouts.import(layoutDefinitions);
     } catch (error) {
