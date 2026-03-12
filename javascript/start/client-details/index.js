@@ -1,3 +1,8 @@
+// TODO: Chapter 2
+// import IOBrowser from '@interopio/browser';
+// TODO: Chapter 9.3
+// import IOWorkspaces from '@interopio/workspaces-api';
+
 const setFields = (client) => {
     const elementName = document.querySelectorAll("[data-name]")[0];
     elementName.innerText = client.name;

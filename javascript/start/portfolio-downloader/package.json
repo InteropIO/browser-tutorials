@@ -1,0 +1,13 @@
+{
+    "name": "portfolio-downloader",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "vite --port 9400"
+    },
+    "dependencies": {
+        "@interopio/browser": "^4.0.0"
+    },
+    "devDependencies": {
+        "vite": "^6.0.0"
+    }
+}

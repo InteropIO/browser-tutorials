@@ -1,3 +1,8 @@
+import IOBrowserPlatform from '@interopio/browser-platform';
+import IOWorkspaces from '@interopio/workspaces-api';
+import { setupApplications } from './plugins/applicationsPlugin.js';
+import { setupLayouts } from './plugins/layoutsPlugin.js';
+
 const setupClients = (clients) => {
     const table = document.getElementById("clientsTable").getElementsByTagName("tbody")[0];
 
