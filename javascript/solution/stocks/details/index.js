@@ -1,3 +1,5 @@
+import IOBrowser from '@interopio/browser';
+
 const setFields = (stock) => {
     const elementTitle = document.querySelector(".text-center");
     elementTitle.innerText = `Stock Details ${stock.RIC}`;

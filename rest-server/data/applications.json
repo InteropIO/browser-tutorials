@@ -24,7 +24,7 @@
         "name": "Stock Details",
         "type": "window",
         "details": {
-            "url": "http://localhost:9100/details",
+            "url": "http://localhost:9100/details/",
             "left": 100,
             "top": 100,
             "width": 400,
