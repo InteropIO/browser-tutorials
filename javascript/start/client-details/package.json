@@ -1,0 +1,14 @@
+{
+    "name": "client-details",
+    "version": "1.0.0",
+    "scripts": {
+        "start": "vite --port 9200"
+    },
+    "dependencies": {
+        "@interopio/browser": "^4.0.0",
+        "@interopio/workspaces-api": "^4.0.0"
+    },
+    "devDependencies": {
+        "vite": "^6.0.0"
+    }
+}

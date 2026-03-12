@@ -3,24 +3,13 @@
     "version": "1.0.0",
     "description": "io.Connect Browser JavaScript Tutorial",
     "scripts": {
-        "start:clients": "vite clients --port 9000",
-        "start:stocks": "vite stocks --port 9100",
-        "start:clientDetails": "vite client-details --port 9200",
-        "start:workspace": "http-server ./workspace -p 9300 -c-1",
-        "start:downloader": "vite portfolio-downloader --port 9400",
-        "start": "concurrently \"npm run start:clients\" \"npm run start:stocks\" \"npm run start:clientDetails\" \"npm run start:workspace\" \"npm run start:downloader\""
+        "install:apps": "concurrently \"cd clients && npm install\" \"cd stocks && npm install\" \"cd client-details && npm install\" \"cd workspace && npm install\" \"cd portfolio-downloader && npm install\"",
+        "start": "concurrently \"cd clients && npm start\" \"cd stocks && npm start\" \"cd client-details && npm start\" \"cd workspace && npm start\" \"cd portfolio-downloader && npm start\""
     },
     "keywords": [],
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@interopio/browser": "*",
-        "@interopio/browser-platform": "*",
-        "@interopio/workspaces-api": "*",
-        "concurrently": "^5.3.0",
-        "http-server": "^0.12.3"
-    },
-    "devDependencies": {
-        "vite": "^6.0.0"
+        "concurrently": "^5.3.0"
     }
 }
