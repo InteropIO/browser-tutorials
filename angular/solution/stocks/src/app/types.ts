@@ -1,5 +1,3 @@
-import { Glue42Web } from '@glue42/web';
-
 export interface Stock {
     Ask: number;
     Bid: number;
@@ -39,6 +37,4 @@ export interface Client {
     notes: string[];
 }
 
-export type GlueStatus = "disconnected" | "unavailable" | "available";
-
-export type Channel = Glue42Web.Channels.ChannelContext;
+export type IOConnectStatus = "disconnected" | "unavailable" | "available";

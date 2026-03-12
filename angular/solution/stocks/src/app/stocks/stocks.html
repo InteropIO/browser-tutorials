@@ -1,0 +1,33 @@
+<body>
+    <header>
+        <div class="header-left">
+            <h1 class="io-title-large">Stocks</h1>
+            <div [ngClass]="ioConnectStatus() === 'available' ? 'io-pill io-pill-success' : 'io-pill io-pill-critical'">{{
+                ioConnectStatus() }}</div>
+        </div>
+        <button type="button" class="io-btn io-btn-primary" (click)="handleExportPortfolioClick()">Export Portfolio</button>
+    </header>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Symbol</th>
+                    <th>Description</th>
+                    <th className="text-right">Bid</th>
+                    <th className="text-right">Ask</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (stock of stocks; track stock.RIC) {
+                <tr (click)="handleStockClick(stock)">
+                    <td>{{stock.RIC}}</td>
+                    <td>{{stock.Description}}</td>
+                    <td>{{stock.Bid}}</td>
+                    <td>{{stock.Ask}}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>

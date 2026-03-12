@@ -6,10 +6,12 @@ const clients = require("./data/clients");
 const portfolio = require("./data/portfolio");
 const applications = require("./data/applications");
 const applicationsReact = require("./data/applicationsReact");
+const applicationsAngular = require("./data/applicationsAngular");
 const layouts = require("./data/layouts");
 
 const API_URL_PREFIX = "/api";
 const TARGET_DIR = process.argv[2] || "./";
+const STATIC_PREFIX = "/static";
 
 const app = express();
 
@@ -28,12 +30,15 @@ app.use(function (req, res, next) {
         fs.existsSync(path.join(TARGET_DIR, req.path))
     ) {
         res.sendFile(path.resolve(path.join(TARGET_DIR, req.path)));
-    } else if (req.path.startsWith(API_URL_PREFIX)) {
+    } else if (req.path.startsWith(API_URL_PREFIX) || req.path.startsWith(STATIC_PREFIX)) {
         next();
     } else {
         res.sendFile(path.resolve(TARGET_DIR, "index.html"));
-    };
+    }
 });
+
+app.use('/static', express.static(path.join(__dirname, 'resources')));
+
 
 app.get(`${API_URL_PREFIX}/clients`, (req, res) => {
     res.json(clients);
@@ -49,6 +54,10 @@ app.get(`${API_URL_PREFIX}/applications`, (req, res) => {
 
 app.get(`${API_URL_PREFIX}/applicationsReact`, (req, res) => {
     res.json(applicationsReact);
+});
+
+app.get(`${API_URL_PREFIX}/applicationsAngular`, (req, res) => {
+    res.json(applicationsAngular);
 });
 
 app.get(`${API_URL_PREFIX}/layouts`, (req, res) => {

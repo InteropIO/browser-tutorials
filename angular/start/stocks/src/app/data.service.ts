@@ -1,20 +1,21 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from '@angular/common/http';
-import { Stock, FullPriceUpdate } from './types';
-import { Subject, Observable } from 'rxjs';
+import { HttpClient } from "@angular/common/http";
+import { Stock, FullPriceUpdate } from "./types";
+import { Subject, Observable, firstValueFrom } from "rxjs";
 
 @Injectable()
 export class DataService {
-
     private stockPricesSource = new Subject<FullPriceUpdate>();
-    public selectedStock: Stock;
+    public selectedStock?: Stock;
 
     constructor(private readonly http: HttpClient) {
         this.startGeneratingStockPrices();
     }
 
     public getStocks(): Promise<Stock[]> {
-        return this.http.get<Stock[]>('http://localhost:8080/api/portfolio').toPromise();
+        return firstValueFrom(
+            this.http.get<Stock[]>("http://localhost:8080/api/portfolio")
+        );
     }
 
     public onStockPrices(): Observable<FullPriceUpdate> {
@@ -30,62 +31,62 @@ export class DataService {
             const priceUpdate = {
                 stocks: [
                     {
-                        RIC: 'VOD.L',
+                        RIC: "VOD.L",
                         Bid: Number((70 - Math.random() * 10).toFixed(2)),
                         Ask: Number((70 + Math.random() * 10).toFixed(2))
                     },
                     {
-                        RIC: 'TSCO.L',
+                        RIC: "TSCO.L",
                         Bid: Number((90 - Math.random() * 10).toFixed(2)),
                         Ask: Number((90 + Math.random() * 10).toFixed(2))
                     },
                     {
-                        RIC: 'BARC.L',
+                        RIC: "BARC.L",
                         Bid: Number((105 - Math.random() * 10).toFixed(2)),
                         Ask: Number((105 + Math.random() * 10).toFixed(2))
                     },
                     {
-                        RIC: 'BMWG.DE',
+                        RIC: "BMWG.DE",
                         Bid: Number((29 - Math.random() * 10).toFixed(2)),
                         Ask: Number((29 + Math.random() * 10).toFixed(2))
                     },
                     {
-                        RIC: 'AAL.L',
+                        RIC: "AAL.L",
                         Bid: Number((46 - Math.random() * 10).toFixed(2)),
                         Ask: Number((46 + Math.random() * 10).toFixed(2))
                     },
                     {
-                        RIC: 'IBM.N',
+                        RIC: "IBM.N",
                         Bid: Number((70 - Math.random() * 10).toFixed(2)),
                         Ask: Number((70 + Math.random() * 10).toFixed(2))
                     },
                     {
-                        RIC: 'AAPL.OQ',
+                        RIC: "AAPL.OQ",
                         Bid: Number((90 - Math.random() * 10).toFixed(2)),
                         Ask: Number((90 + Math.random() * 10).toFixed(2))
                     },
                     {
-                        RIC: 'BA.N',
+                        RIC: "BA.N",
                         Bid: Number((105 - Math.random() * 10).toFixed(2)),
                         Ask: Number((105 + Math.random() * 10).toFixed(2))
                     },
                     {
-                        RIC: 'TSLA:OQ',
+                        RIC: "TSLA:OQ",
                         Bid: Number((29 - Math.random() * 10).toFixed(2)),
                         Ask: Number((29 + Math.random() * 10).toFixed(2))
                     },
                     {
-                        RIC: 'ENBD.DU',
+                        RIC: "ENBD.DU",
                         Bid: Number((46 - Math.random() * 10).toFixed(2)),
                         Ask: Number((46 + Math.random() * 10).toFixed(2))
                     },
                     {
-                        RIC: 'AMZN.OQ',
+                        RIC: "AMZN.OQ",
                         Bid: Number((29 - Math.random() * 10).toFixed(2)),
                         Ask: Number((29 + Math.random() * 10).toFixed(2))
                     },
                     {
-                        RIC: 'MSFT:OQ',
+                        RIC: "MSFT:OQ",
                         Bid: Number((46 - Math.random() * 10).toFixed(2)),
                         Ask: Number((46 + Math.random() * 10).toFixed(2))
                     }

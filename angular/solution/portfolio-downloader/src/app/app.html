@@ -1,0 +1,10 @@
+<body>
+    <header>
+        <h1 class="io-title-large">Portfolio Downloader</h1>
+        <div [ngClass]="ioConnectStatus() === 'available' ? 'io-pill io-pill-success' : 'io-pill io-pill-critical'">{{ ioConnectStatus() }}</div>
+    </header>
+
+    @if (clientName) {
+        <h3>Downloading portfolio of {{ clientName }} ...</h3>
+    }
+</body>

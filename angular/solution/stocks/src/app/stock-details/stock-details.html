@@ -1,0 +1,46 @@
+<body>
+    <header>
+        <h1 class="io-title-large">Stock Details</h1>
+        <div [ngClass]="ioConnectStatus() === 'available' ? 'io-pill io-pill-success' : 'io-pill io-pill-critical'">{{
+            ioConnectStatus() }}</div>
+    </header>
+    <h3>{{ clientMessage }}</h3>
+    <div class="table-container">
+        <table>
+            <tbody>
+                <tr>
+                    <th>RIC</th>
+                    <td>{{stock?.RIC}}</td>
+                </tr>
+                <tr>
+                    <th>BPOD</th>
+                    <td>{{stock?.BPOD}}</td>
+                </tr>
+                <tr>
+                    <th>Bloomberg</th>
+                    <td>{{stock?.Bloomberg}}</td>
+                </tr>
+                <tr>
+                    <th>Description</th>
+                    <td>{{stock?.Description}}</td>
+                </tr>
+                <tr>
+                    <th>Exchange</th>
+                    <td>{{stock?.Exchange}}</td>
+                </tr>
+                <tr>
+                    <th>Venues</th>
+                    <td>{{stock?.Venues}}</td>
+                </tr>
+                <tr>
+                    <th>Bid</th>
+                    <td>{{stock?.Bid}}</td>
+                </tr>
+                <tr>
+                    <th>Ask</th>
+                    <td>{{stock?.Ask}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>

@@ -1,0 +1,37 @@
+<body>
+    <header>
+        <h1 class="io-title-large">Client Details</h1>
+        <div
+            [ngClass]="ioConnectStatus() === 'available' ? 'io-pill io-pill-success' : 'io-pill io-pill-critical'"
+        >
+            {{ ioConnectStatus() }}
+        </div>
+    </header>
+
+    <div class="table-container">
+        <table>
+            <tbody>
+                <tr>
+                    <th>Full Name</th>
+                    <td>{{ client.name }}</td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td>{{ client.address }}</td>
+                </tr>
+                <tr>
+                    <th>Phone Number</th>
+                    <td>{{ client.contactNumbers }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ client.email }}</td>
+                </tr>
+                <tr>
+                    <th>Account Manager</th>
+                    <td>{{ client.accountManager }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>

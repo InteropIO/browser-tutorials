@@ -1,0 +1,35 @@
+body {
+    padding: 16px;
+    --io-font-size: 14px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+header div {
+    margin-left: 8px;
+}
+
+th {
+    text-align: left;
+    padding: 8px 2px;
+}
+
+td {
+    padding: 2px 4px;
+}
+
+tbody tr:hover {
+    background-color: var(--list-item-background-hover);
+}
+
+.table-container {
+    overflow: auto;
+    flex: 1;
+}

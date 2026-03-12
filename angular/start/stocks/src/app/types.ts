@@ -37,12 +37,4 @@ export interface Client {
     notes: string[];
 }
 
-export type GlueStatus = "disconnected" | "unavailable" | "available";
-
-export interface Channel {
-    name: string;
-    data?: any;
-    meta: {
-        color: string;
-    };
-}
+export type IOConnectStatus = "disconnected" | "unavailable" | "available";

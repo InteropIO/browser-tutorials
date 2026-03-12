@@ -1,0 +1,17 @@
+body {
+    padding: 16px;
+    --io-font-size: 14px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+header div {
+    margin-left: 8px;
+}
