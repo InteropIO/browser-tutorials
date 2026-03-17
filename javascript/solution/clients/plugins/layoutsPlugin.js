@@ -12,5 +12,5 @@ export const setupLayouts = async (io, { url }) => {
         await io.layouts.import(layoutDefinitions);
     } catch (error) {
         console.error(error.message);
-    };
+    }
 };

@@ -1,14 +1,19 @@
 // TODO: Chapter 2
-// import IOBrowserPlatform from '@interopio/browser-platform';
+// import IOBrowserPlatform from "@interopio/browser-platform";
+
 // TODO: Chapter 9.3
-// import IOWorkspaces from '@interopio/workspaces-api';
+// import IOWorkspaces from "@interopio/workspaces-api";
+
 // TODO: Chapter 8.2
-// import { setupApplications } from './plugins/applicationsPlugin.js';
+// import { setupApplications } from "./plugins/applicationsPlugin.js";
+
 // TODO: Chapter 9.2
-// import { setupLayouts } from './plugins/layoutsPlugin.js';
+// import { setupLayouts } from "./plugins/layoutsPlugin.js";
 
 const setupClients = (clients) => {
-    const table = document.getElementById("clientsTable").getElementsByTagName("tbody")[0];
+    const table = document
+        .getElementById("clientsTable")
+        .getElementsByTagName("tbody")[0];
 
     const addRowCell = (row, cellData, cssClass) => {
         const cell = document.createElement("td");
@@ -17,7 +22,7 @@ const setupClients = (clients) => {
 
         if (cssClass) {
             cell.className = cssClass;
-        };
+        }
 
         row.appendChild(cell);
     };
@@ -53,15 +58,10 @@ const setupClients = (clients) => {
 
 const clientClickedHandler = (client) => {
     // TODO: Chapter 4.2
-
     // TODO: Chapter 4.3
-
     // TODO: Chapter 5.1
-
     // TODO: Chapter 6.3
-
     // TODO: Chapter 9.4
-
 };
 
 let counter = 1;

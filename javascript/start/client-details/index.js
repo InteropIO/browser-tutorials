@@ -1,7 +1,8 @@
 // TODO: Chapter 2
-// import IOBrowser from '@interopio/browser';
+// import IOBrowser from "@interopio/browser";
+
 // TODO: Chapter 9.3
-// import IOWorkspaces from '@interopio/workspaces-api';
+// import IOWorkspaces from "@interopio/workspaces-api";
 
 const setFields = (client) => {
     const elementName = document.querySelectorAll("[data-name]")[0];
@@ -31,7 +32,6 @@ const setFields = (client) => {
 
 const start = async () => {
     // TODO: Chapter 2
-
     // TODO: Chapter 9.5
 };
 

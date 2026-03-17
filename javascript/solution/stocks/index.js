@@ -1,5 +1,5 @@
-import IOBrowser from '@interopio/browser';
-import IOWorkspaces from '@interopio/workspaces-api';
+import IOBrowser from "@interopio/browser";
+import IOWorkspaces from "@interopio/workspaces-api";
 
 let clientPortfolioStocks;
 let clientName;
@@ -76,7 +76,9 @@ const generateStockPrices = (handleNewPrices) => {
 };
 
 const setupStocks = (stocks) => {
-    const table = document.getElementById("stocksTable").getElementsByTagName("tbody")[0];
+    const table = document
+        .getElementById("stocksTable")
+        .getElementsByTagName("tbody")[0];
 
     table.innerHTML = "";
 
@@ -87,7 +89,7 @@ const setupStocks = (stocks) => {
 
         if (cssClass) {
             cell.className = cssClass;
-        };
+        }
 
         row.appendChild(cell);
     };
@@ -128,7 +130,7 @@ const newPricesHandler = (priceUpdate) => {
 
         if (!row) {
             return;
-        };
+        }
 
         const bidElement = row.children[2];
         bidElement.innerText = stock.Bid;
@@ -139,7 +141,7 @@ const newPricesHandler = (priceUpdate) => {
 
     if (priceStream) {
         priceStream.push(priceUpdate);
-    };
+    }
 };
 
 const stockClickedHandler = async (stock) => {
@@ -172,21 +174,27 @@ const stockClickedHandler = async (stock) => {
     let detailsWindow;
 
     const myWorkspace = await io.workspaces.getMyWorkspace();
-    let detailsWorkspaceWindow = myWorkspace.getWindow(window => window.appName === "Stock Details");
+    let detailsWorkspaceWindow = myWorkspace.getWindow(
+        (window) => window.appName === "Stock Details"
+    );
 
     if (detailsWorkspaceWindow) {
         detailsWindow = detailsWorkspaceWindow.getGdWindow();
     } else {
         const myId = io.windows.my().id;
-        const myImmediateParent = myWorkspace.getWindow(window => window.id === myId).parent;
+        const myImmediateParent = myWorkspace.getWindow(
+            (window) => window.id === myId
+        ).parent;
         const group = await myImmediateParent.parent.addGroup();
 
-        detailsWorkspaceWindow = await group.addWindow({ appName: "Stock Details" });
+        detailsWorkspaceWindow = await group.addWindow({
+            appName: "Stock Details"
+        });
 
         await detailsWorkspaceWindow.forceLoad();
 
         detailsWindow = detailsWorkspaceWindow.getGdWindow();
-    };
+    }
 
     detailsWindow.updateContext({ stock });
 };
@@ -197,7 +205,7 @@ const exportPortfolioButtonHandler = async (portfolio) => {
 
         if (!intents) {
             return;
-        };
+        }
 
         const intentRequest = {
             intent: "ExportPortfolio",
@@ -213,11 +221,10 @@ const exportPortfolioButtonHandler = async (portfolio) => {
     }
 };
 
-
 const start = async () => {
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/service-worker.js");
-    };
+    }
 
     const stocksResponse = await fetch("http://localhost:8080/api/portfolio");
     const stocks = await stocksResponse.json();
@@ -306,20 +313,22 @@ const start = async () => {
         myWorkspace.onContextUpdated((context) => {
             if (context.client) {
                 const clientPortfolio = context.client.portfolio;
-                clientPortfolioStocks = stocks.filter((stock) => clientPortfolio.includes(stock.RIC));
+                clientPortfolioStocks = stocks.filter((stock) =>
+                    clientPortfolio.includes(stock.RIC)
+                );
                 clientName = context.client.name;
 
                 setupStocks(clientPortfolioStocks);
-            };
+            }
         });
-    };
+    }
 
     const exportPortfolioButton = document.getElementById("exportPortfolio");
 
     exportPortfolioButton.onclick = () => {
         if (!clientPortfolioStocks) {
             return;
-        };
+        }
 
         exportPortfolioButtonHandler(clientPortfolioStocks);
     };
