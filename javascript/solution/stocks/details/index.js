@@ -1,4 +1,4 @@
-import IOBrowser from '@interopio/browser';
+import IOBrowser from "@interopio/browser";
 
 const setFields = (stock) => {
     const elementTitle = document.querySelector(".text-center");
@@ -13,7 +13,8 @@ const setFields = (stock) => {
     const elementBloomberg = document.querySelectorAll("[data-bloomberg]")[0];
     elementBloomberg.innerText = stock.Bloomberg;
 
-    const elementDescription = document.querySelectorAll("[data-description]")[0];
+    const elementDescription =
+        document.querySelectorAll("[data-description]")[0];
     elementDescription.innerText = stock.Description;
 
     const elementExchange = document.querySelectorAll("[data-exchange]")[0];
@@ -65,14 +66,14 @@ const start = async () => {
         selectedStock = context.stock;
 
         setFields(selectedStock);
-    };
+    }
 
     myWindow.onContextUpdated((context) => {
         if (context.stock) {
             selectedStock = context.stock;
 
             setFields(selectedStock);
-        };
+        }
     });
 
     const subscription = await io.interop.subscribe("LivePrices");
@@ -80,10 +81,12 @@ const start = async () => {
     const streamDataHandler = (streamData) => {
         if (!selectedStock) {
             return;
-        };
+        }
 
         const updatedStocks = streamData.data.stocks;
-        const selectedStockPrice = updatedStocks.find(updatedStock => updatedStock.RIC === selectedStock.RIC);
+        const selectedStockPrice = updatedStocks.find(
+            (updatedStock) => updatedStock.RIC === selectedStock.RIC
+        );
 
         updateStockPrices(selectedStockPrice.Bid, selectedStockPrice.Ask);
     };

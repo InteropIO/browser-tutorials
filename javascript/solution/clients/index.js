@@ -1,10 +1,12 @@
-import IOBrowserPlatform from '@interopio/browser-platform';
-import IOWorkspaces from '@interopio/workspaces-api';
-import { setupApplications } from './plugins/applicationsPlugin.js';
-import { setupLayouts } from './plugins/layoutsPlugin.js';
+import IOBrowserPlatform from "@interopio/browser-platform";
+import IOWorkspaces from "@interopio/workspaces-api";
+import { setupApplications } from "./plugins/applicationsPlugin.js";
+import { setupLayouts } from "./plugins/layoutsPlugin.js";
 
 const setupClients = (clients) => {
-    const table = document.getElementById("clientsTable").getElementsByTagName("tbody")[0];
+    const table = document
+        .getElementById("clientsTable")
+        .getElementsByTagName("tbody")[0];
 
     const addRowCell = (row, cellData, cssClass) => {
         const cell = document.createElement("td");
@@ -13,7 +15,7 @@ const setupClients = (clients) => {
 
         if (cssClass) {
             cell.className = cssClass;
-        };
+        }
 
         row.appendChild(cell);
     };
@@ -66,12 +68,15 @@ const clientClickedHandler = async (client) => {
     };
 
     try {
-        const workspace = await io.workspaces.restoreWorkspace("Client Space", restoreConfig);
+        const workspace = await io.workspaces.restoreWorkspace(
+            "Client Space",
+            restoreConfig
+        );
 
         await raiseNotificationOnWorkspaceOpen(client.name, workspace);
-    } catch(error) {
+    } catch (error) {
         console.error(error.message);
-    };
+    }
 };
 
 // let counter = 1;
@@ -96,7 +101,7 @@ const clientClickedHandler = async (client) => {
 const raiseNotificationOnWorkspaceOpen = async (clientName, workspace) => {
     const options = {
         title: "New Workspace",
-        body: `A new Workspace for ${clientName} was opened!`,
+        body: `A new Workspace for ${clientName} was opened!`
     };
 
     const notification = await io.notifications.raise(options);
@@ -110,7 +115,7 @@ const raiseNotificationOnWorkspaceOpen = async (clientName, workspace) => {
 const start = async () => {
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/service-worker.js");
-    };
+    }
 
     const clientsResponse = await fetch("http://localhost:8080/api/clients");
     const clients = await clientsResponse.json();
@@ -229,13 +234,13 @@ const start = async () => {
         definitions: [
             {
                 name: "Setup Applications",
-                config: { url: "http://localhost:8080/api/applications"},
+                config: { url: "http://localhost:8080/api/applications" },
                 start: setupApplications,
                 critical: true
             },
             {
                 name: "Setup Workspace Layouts",
-                config: { url: "http://localhost:8080/api/layouts"},
+                config: { url: "http://localhost:8080/api/layouts" },
                 start: setupLayouts,
                 critical: true
             }

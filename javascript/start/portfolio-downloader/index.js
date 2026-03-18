@@ -1,17 +1,21 @@
 // TODO: Chapter 2
-// import IOBrowser from '@interopio/browser';
+// import IOBrowser from "@interopio/browser";
 
 const intentHandler = (context) => {
     if (!context) {
         return;
-    };
+    }
 
     setupTitle(context.data.clientName);
 
-    const dataToWrite = JSON.stringify({
-        date: new Date(Date.now()).toLocaleString("en-US"),
-        portfolio: context.data.portfolio
-    }, null, 4);
+    const dataToWrite = JSON.stringify(
+        {
+            date: new Date(Date.now()).toLocaleString("en-US"),
+            portfolio: context.data.portfolio
+        },
+        null,
+        4
+    );
     const blob = new Blob([dataToWrite], { type: "application/json" });
     const download = document.getElementById("download");
     const href = URL.createObjectURL(blob);
@@ -36,9 +40,7 @@ const setupTitle = (clientName) => {
 
 async function start() {
     // TODO: Chapter 2
-
     // TODO: Chapter 10.1
-
-};
+}
 
 start().catch(console.error);

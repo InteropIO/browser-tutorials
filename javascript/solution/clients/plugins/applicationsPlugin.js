@@ -10,7 +10,7 @@ export const setupApplications = async (io, { url }) => {
         const appDefinitions = await fetchAppDefinitions(url);
 
         await io.appManager.inMemory.import(appDefinitions);
-    } catch(error) {
+    } catch (error) {
         console.error(error.message);
-    };
+    }
 };

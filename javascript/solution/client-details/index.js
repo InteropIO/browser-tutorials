@@ -1,5 +1,5 @@
-import IOBrowser from '@interopio/browser';
-import IOWorkspaces from '@interopio/workspaces-api';
+import IOBrowser from "@interopio/browser";
+import IOWorkspaces from "@interopio/workspaces-api";
 
 const setFields = (client) => {
     const elementName = document.querySelectorAll("[data-name]")[0];
@@ -42,9 +42,9 @@ const start = async () => {
             if (context.client) {
                 setFields(context.client);
                 myWorkspace.setTitle(context.client.name);
-            };
+            }
         });
-    };
+    }
 };
 
 start().catch(console.error);

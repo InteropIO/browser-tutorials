@@ -1,7 +1,8 @@
 // TODO: Chapter 2
-// import IOBrowser from '@interopio/browser';
+// import IOBrowser from "@interopio/browser";
+
 // TODO: Chapter 9.3
-// import IOWorkspaces from '@interopio/workspaces-api';
+// import IOWorkspaces from "@interopio/workspaces-api";
 
 let clientPortfolioStocks;
 let clientName;
@@ -78,7 +79,9 @@ const generateStockPrices = (handleNewPrices) => {
 };
 
 const setupStocks = (stocks) => {
-    const table = document.getElementById("stocksTable").getElementsByTagName("tbody")[0];
+    const table = document
+        .getElementById("stocksTable")
+        .getElementsByTagName("tbody")[0];
 
     table.innerHTML = "";
 
@@ -89,7 +92,7 @@ const setupStocks = (stocks) => {
 
         if (cssClass) {
             cell.className = cssClass;
-        };
+        }
         row.appendChild(cell);
     };
 
@@ -130,7 +133,7 @@ const newPricesHandler = (priceUpdate) => {
 
         if (!row) {
             return;
-        };
+        }
 
         const bidElement = row.children[2];
         bidElement.innerText = stock.Bid;
@@ -157,11 +160,10 @@ const exportPortfolioButtonHandler = async (portfolio) => {
     // TODO: Chapter 10.2
 };
 
-
 const start = async () => {
     if ("serviceWorker" in navigator) {
         navigator.serviceWorker.register("/service-worker.js");
-    };
+    }
 
     const stocksResponse = await fetch("http://localhost:8080/api/portfolio");
     const stocks = await stocksResponse.json();

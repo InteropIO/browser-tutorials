@@ -1,5 +1,5 @@
 // TODO: Chapter 2
-// import IOBrowser from '@interopio/browser';
+// import IOBrowser from "@interopio/browser";
 
 const setFields = (stock) => {
     const elementTitle = document.querySelector(".text-center");
@@ -14,7 +14,8 @@ const setFields = (stock) => {
     const elementBloomberg = document.querySelectorAll("[data-bloomberg]")[0];
     elementBloomberg.innerText = stock.Bloomberg;
 
-    const elementDescription = document.querySelectorAll("[data-description]")[0];
+    const elementDescription =
+        document.querySelectorAll("[data-description]")[0];
     elementDescription.innerText = stock.Description;
 
     const elementExchange = document.querySelectorAll("[data-exchange]")[0];

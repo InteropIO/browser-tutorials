@@ -1,16 +1,20 @@
-import IOBrowser from '@interopio/browser';
+import IOBrowser from "@interopio/browser";
 
 const intentHandler = (context) => {
     if (!context) {
         return;
-    };
+    }
 
     setupTitle(context.data.clientName);
 
-    const dataToWrite = JSON.stringify({
-        date: new Date(Date.now()).toLocaleString("en-US"),
-        portfolio: context.data.portfolio
-    }, null, 4);
+    const dataToWrite = JSON.stringify(
+        {
+            date: new Date(Date.now()).toLocaleString("en-US"),
+            portfolio: context.data.portfolio
+        },
+        null,
+        4
+    );
     const blob = new Blob([dataToWrite], { type: "application/json" });
     const download = document.getElementById("download");
     const href = URL.createObjectURL(blob);
@@ -40,6 +44,6 @@ async function start() {
     toggleIOAvailable();
 
     io.intents.register("ExportPortfolio", intentHandler);
-};
+}
 
 start().catch(console.error);
